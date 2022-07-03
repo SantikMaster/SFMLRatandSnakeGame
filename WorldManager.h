@@ -74,6 +74,7 @@ public:
 	bool GoToDestination(float goY, float goX);
 	void CollideObjects(Character* player);
 	void GoToRandLocation();
+	void GoToNearestLocation();
 	
 	void KeyboardEvent(sf::Event event, sf::RenderWindow *sf_win);
 	WorldManager();

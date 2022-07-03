@@ -146,6 +146,7 @@ void WorldManager::CollideObjects(Character* player)
 				Player->PickedPotato += 1;
 				Player->Grow();
 				Detach(potato);
+				GoToNearestLocation();
 			}
 		}
 	}
@@ -220,7 +221,8 @@ void WorldManager::Update()
         SpawnTime=clock2.get()->getElapsedTime().asSeconds();
         Character_list.push_back(std::make_shared<Character>(TextureMap["potato"], this));
         
-        GoToRandLocation();
+        GoToNearestLocation();
+     //   GoToRandLocation();
 	}
 
  /*       auto it = *std::min_element(observers.begin(), observers.end(), [](Character * a, Character * b, ) 
@@ -249,15 +251,46 @@ void WorldManager::Update()
 	clock.get()->restart();
 }
 
+void WorldManager::GoToNearestLocation()
+{
+	
+	std::cout << "Nearest!";
+	auto player = Player.get();
+	auto it = *std::min_element(observers.begin(), observers.end(), [&player](Character * a, Character * b) 
+		{
+            int Xr = a->X - player->X;
+            int Yr = a->Y - player->Y;
+            
+            int Xu = b->X - player->X;
+            int Yu = b->Y - player->Y;
+            
+      		return (Xr*Xr + Yr*Yr) < (Xu*Xu + Yu*Yu);
+		});
+		
+	int X = it->X/Map::TileSize;
+	int Y = it->Y/Map::TileSize;
+	Star.get()->Start = &(Star.get()->Nodes[(int)(player->Y)/Map::TileSize][(int)(player->X)/Map::TileSize]);
+	Star.get()->End = &(Star.get()->Nodes[Y][X]);
+	
+	Star.get()->LoadMap(WorldMap);
+	Star.get()->AStarAlg();
+		
+	if (Star.get()->IsPathAvaible() )
+	{
+		
+		Star.get()->SetPath(&(Player.get()->PathToGo));
+		Player.get()->IsPathAvaible = true;	
+		std::cout << "Go!!\n";
+			
+	}
+	else
+		GoToRandLocation();
+	
+}
 void WorldManager::GoToRandLocation()
 {
 
 	int i = 0;
-/*	auto it = observers.front();
-	for( it = observers.front();it<observers.back();it++)
-	{
-		std::cout << "Exists: " << it->Counter <<"\n";
-	}*/
 	auto it = observers.begin();
 	for( it = observers.begin();it!=observers.end();it++)
 	{

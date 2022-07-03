@@ -211,11 +211,13 @@ void Snake::Move(Direction Dir)
 	
 	if(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize))
 	{
+		
 		PathToGo.clear();
 		X = sect[0].X;
 	    Y = sect[0].Y;
 		dX = 0;
 		dY = 0;
+	
 		return;
 			
 	} 
