@@ -48,8 +48,8 @@ WorldManager::WorldManager()
 	SpawnTime = clock2.get()->getElapsedTime().asSeconds();
 
 	Star = std::make_shared<AStar>();
-	Star.get()->CollumsX = Map::MapSize;
-	Star.get()->CollumsY = Map::MapSize;
+	Star.get()->CollumsX = Map::MapSize+10;
+	Star.get()->CollumsY = Map::MapSize+10;
 	Star.get()->Init();
 	
 	Player = std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*3, GetTimeSec(), this);
@@ -131,6 +131,7 @@ void WorldManager::push_back(sf::RectangleShape &Obj)
 void WorldManager::CollideObjects(Character* player)
 {
 //	auto player = Player.get();
+	bool Detached = false;
 	for (auto o = observers.begin(); o!=observers.end(); o++) 
 	{
 	
@@ -146,9 +147,15 @@ void WorldManager::CollideObjects(Character* player)
 				Player->PickedPotato += 1;
 				Player->Grow();
 				Detach(potato);
-				GoToNearestLocation();
+		//		GoToNearestLocation();
+		//		std::cout<< " log 111\n";
+				Detached = true;
 			}
 		}
+	}
+	if(Detached)
+	{
+		GoToNearestLocation();
 	}
 		
 }
@@ -156,6 +163,7 @@ void WorldManager::Draw(sf::RenderWindow* Window)
 {
 	Window->clear();
 
+//	if(Player.get()->TestFlag) std::cout<< "draw Flag";
 	DrawFont(Window, TextureMap["map"]);
 
 	WorldMap.draw(Window);
@@ -215,6 +223,7 @@ void WorldManager::Update()
 //    {
     	
 //	}
+  //  if(Player.get()->TestFlag) std::cout<< "upd Flag";
     if(-SpawnTime+timeSec>=SpawnPass)
     {
     //    std::cout<<"Spawned potato!!\n";
@@ -243,9 +252,9 @@ void WorldManager::Update()
     ///  		 return a.get()->X > b.get()->X;
 
 
-	
+//	std::cout << "adsada";
         
-    
+
     
 	Player.get()->update(GetTimeMicrosec());
 	clock.get()->restart();
@@ -254,8 +263,14 @@ void WorldManager::Update()
 void WorldManager::GoToNearestLocation()
 {
 	
-	std::cout << "Nearest!";
+//	std::cout << "Nearest!";
 	auto player = Player.get();
+	
+	if(observers.empty())
+	{	
+//		std::cout<<"No potatoes\n";
+		return;
+	}
 	auto it = *std::min_element(observers.begin(), observers.end(), [&player](Character * a, Character * b) 
 		{
             int Xr = a->X - player->X;
@@ -278,9 +293,19 @@ void WorldManager::GoToNearestLocation()
 	if (Star.get()->IsPathAvaible() )
 	{
 		
+		auto Ch = it;
 		Star.get()->SetPath(&(Player.get()->PathToGo));
 		Player.get()->IsPathAvaible = true;	
-		std::cout << "Go!!\n";
+//		std::cout << "Go Near"<< Ch->X<< " "<< Ch->Y<<"\n";
+	//	Player.get()->TestFlag = true;
+		
+		for(auto it = observers.begin();it!=observers.end();it++)
+		{
+//		std::cout << "Exists: " << *(*it)->Counter <<"\n";
+		  Ch = *it;
+			std::cout<< "Exist" << Ch->Counter << "\n";
+	
+		}
 			
 	}
 	else
@@ -297,15 +322,16 @@ void WorldManager::GoToRandLocation()
 		auto Ch = *it;
 		std::cout << "Exists: " << Ch->Counter <<"\n";
 	}
+	auto Ch = *it;
     do
     {
     	it = observers.begin();	
 		int Size = observers.size();
 		if (Size!=0)
 			std::advance (it,std::rand()%Size);
-			
-		auto Ch = *it;
-		std::cout << "Potato: " << Ch->Counter <<"\n";
+		Ch = *it;	
+
+//		std::cout << "Potato: " << Ch->Counter <<"\n";
 			auto player = Player.get();
 		int X = Ch->X/Map::TileSize;
 		int Y = Ch->Y/Map::TileSize;
@@ -321,7 +347,16 @@ void WorldManager::GoToRandLocation()
 		
 		Star.get()->SetPath(&(Player.get()->PathToGo));
 		Player.get()->IsPathAvaible = true;	
-		std::cout << "Go!!\n";
+		std::cout << "Go!!"<< Ch->X<< " "<< Ch->Y<<"\n";
+	//	Player.get()->TestFlag = true;
+		
+		for(auto it = observers.begin();it!=observers.end();it++)
+		{
+//		std::cout << "Exists: " << *(*it)->Counter <<"\n";
+		  Ch = *it;
+			std::cout<< "Exist" << Ch->Counter << "\n";
+	
+		}
 			
 	}
 	else
@@ -337,11 +372,15 @@ bool WorldManager::GoToDestination(float goY, float goX)
 	auto player = Player.get();
 	int X = goX/Map::TileSize;
 	int Y = goY/Map::TileSize;
+//		std::cout << "log go 1";
 	Star.get()->Start = &(Star.get()->Nodes[(int)(player->Y)/Map::TileSize][(int)(player->X)/Map::TileSize]);
 	Star.get()->End = &(Star.get()->Nodes[Y][X]);
 	
+//		std::cout << "log go2";
 	Star.get()->LoadMap(WorldMap);
 	Star.get()->AStarAlg();
+	
+//	std::cout << "log go";
 	
 //	std::cout <<"Click:" <<position.x/Map::TileSize<< " " << position.y/Map::TileSize << "  \n"; 
 	

@@ -94,7 +94,9 @@ void Snake::update(float time)
 {	
 	this->Character::update(time);
 	//	std::cout<<time<< "\n";
-	/**/
+//	if (TestFlag) std::cout<<"here";
+	
+	
 	if (IsPathAvaible)
 	{
 		MoveAlongPath();
@@ -120,6 +122,8 @@ void Snake::update(float time)
 }
 void Snake::MoveAlongPath()
 {
+//	if (TestFlag == true)
+//	std::cout<< "log\n";
 	if (PathToGo.empty() || PathToGo.back().Y == 0)
 	{
 		dX = 0;
@@ -128,38 +132,87 @@ void Snake::MoveAlongPath()
 //		std::cout<< "Empty";
 	    return;
 	}
-		
-	if (PathToGo.back().X>(int)(X/Map::TileSize))
+	
+
+	if (
+	((int)PathToGo.back().Y*Map::TileSize == (int)Y)&&
+	  (PathToGo.back().X*Map::TileSize==(int)X))
 	{
-		dX = +1;
-		dY = 0;
-		
-	}
-	else if ((int)PathToGo.back().X<(int)(X/Map::TileSize))
-	{
-		dX = -1;
-		dY = 0;
-	}
-	if ((int)PathToGo.back().Y>(int)(Y/Map::TileSize))
-	{
-		dX = 0;
-		dY = +1;
-	}	
-	else if ((int)PathToGo.back().Y<(int)(Y/Map::TileSize))
-	{
-		dX = 0;
-		dY = -1;
-		
-//			std::cout<< "Move path up"<< PathToGo.back().Y<<"   " << PathToGo.empty()<<  "  "<<"\n";
-	}	/**/
-	if (((int)PathToGo.back().Y*Map::TileSize == (int)Y)&&(PathToGo.back().X*Map::TileSize==(int)X))
-	{
-	//	std::cout << "Position Pr:" <<PathToGo.back().Y << "Y: "<<(int) Y <<  ":: "<< (PathToGo.back().X)<< "X: "<<(int)X <<"\n";
+	 //   std::cout <<"delete path"<< PathToGo.back().X << "  " << PathToGo.back().Y << " \n";
 		dX = 0;
 		dY = 0;
 		PathToGo.pop_back();
 	}
+	//  std::cout <<"delete path"<< PathToGo.back().X*Map::TileSize << "  " <<X << " \n";	
+	if (PathToGo.empty() )
+	{
+	//	std::cout<<"Empty\n";
+	    return;
+	}
 	
+//		std::cout<< "log\n"<< PathToGo.back().X-1 <<"  "<<(int)((X-Map::TileSize+1)/Map::TileSize)<< "log\n" ;
+//	std::cout<< "log";	
+	if (PathToGo.back().X>(int)(X/Map::TileSize))
+	{
+		dX = +1;
+		dY = 0;
+//		std::cout<<"log X\n";
+		//	std::cout<< "logR\n";
+	}
+	else if (PathToGo.back().X-1<(int)((X-Map::TileSize+1)/Map::TileSize))
+//	else if ((int)PathToGo.back().X<(int)((X)/Map::TileSize))
+
+
+ //  else if ((int)PathToGo.back().X+1==((int)(X)/Map::TileSize))// &&((int)(X)%Map::TileSize)!=0
+ //   else if (((int)PathToGo.back().X*Map::TileSize)<((int)(X)))
+	{
+//		std::cout<< "log\n"<< PathToGo.back().X <<"  "<<(X)/Map::TileSize<< "log\n" ;
+		dX = -1;
+		dY = 0;
+//		std::cout<<"log X\n";
+	}/**/
+	else
+	{
+		
+	 //   std::cout<< "YYYY:"<<PathToGo.back().Y+1<<"  "<<(int)(Y/Map::TileSize)<< " \n";
+		if((PathToGo.back().Y==(int)(Y/Map::TileSize)))
+		{
+			dX = 0;
+//		    std::cout<<"log deleteX\n";
+			PathToGo.pop_back();
+		}
+		    
+	}
+	
+		
+	if ((int)PathToGo.back().Y>(int)(Y/Map::TileSize))
+	{
+		dX = 0;
+		dY = +1;
+//		std::cout<<"log Y\n";
+	}
+	else if (PathToGo.back().Y-1<(int)((Y-Map::TileSize+1)/Map::TileSize))
+	{
+		dX = 0;
+		dY = -1;
+	//	std::cout<<"log Y\n";
+	}/**/
+	else
+	{
+		
+	 //   std::cout<< "YYYY:"<<PathToGo.back().Y+1<<"  "<<(int)(Y/Map::TileSize)<< " \n";
+		if((PathToGo.back().X==(int)(X/Map::TileSize)))
+		{
+			dY = 0;
+		    std::cout<<"log deleteY\n";
+			PathToGo.pop_back();
+		}
+		   
+	}
+	
+    //TestFlag = false;
+
+
 		
 }
 void Snake::PrintPath()

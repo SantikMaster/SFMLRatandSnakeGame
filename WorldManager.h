@@ -42,7 +42,7 @@ class WorldManager
 	float Velocity = 1.f;
 	
 	float SpawnTime;
-	float SpawnPass = 3;
+	float SpawnPass = 2;
 public:
 	void Attach(Character& o) 
 	 {

@@ -69,7 +69,7 @@ public:
 	int HeadPositionX = 30;
 	int HeadPositionY = 0;
 	int Lenght = 1;
-	
+//	bool TestFlag = false;
 
 	std::vector<Section> sect;
 	std::list<Section> PathToGo;
