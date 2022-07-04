@@ -13,9 +13,17 @@ void Character::update(float time)
 {
 //	std::cout<<"time "<<time<< "\n";
 	sprite.setPosition(X - WorldManager::offsetX, Y - WorldManager::offsetY);
+
 	X += dX*time*0.0001;
 	Y += dY*time*0.0001;	
-
+	if(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize))
+	{
+		X -= dX*time*0.0001;
+		Y -= dY*time*0.0001;
+				std::cout<<"stop origin";
+			
+				return;	
+	}
 }
 Character::~Character() 
 {
@@ -237,6 +245,13 @@ void Snake::Move(Direction Dir)
 		
 		case RIGHT:
 		{
+			if(WorldManager::WorldMap.Collide(sect[0].X+Map::TileSize, sect[0].Y, Map::TileSize,Map::TileSize))
+			{
+				std::cout<<"stop";
+				PathToGo.clear();
+				return;	
+			}
+	
 			
 			ShiftSnake();	
 			sect[0].X+=Map::TileSize;
@@ -244,18 +259,36 @@ void Snake::Move(Direction Dir)
 		break;
 		case LEFT:
 		{
+			if(WorldManager::WorldMap.Collide(sect[0].X-Map::TileSize, sect[0].Y, Map::TileSize,Map::TileSize))
+			{
+				std::cout<<"stop";
+				PathToGo.clear();
+				return;	
+			}
 			ShiftSnake();	
 			sect[0].X-=Map::TileSize;
 		}
 		break;	
 		case DOWN:
 		{
+			if(WorldManager::WorldMap.Collide(sect[0].X, sect[0].Y+Map::TileSize, Map::TileSize,Map::TileSize))
+			{
+				std::cout<<"stop";
+				PathToGo.clear();
+				return;	
+			}
 			ShiftSnake();	
 			sect[0].Y+=Map::TileSize;
 		}
 		break;
 		case UP:
-		{
+		{	
+			if(WorldManager::WorldMap.Collide(sect[0].X, sect[0].Y-Map::TileSize, Map::TileSize,Map::TileSize))
+			{
+				std::cout<<"stop";
+				PathToGo.clear();
+				return;	
+			}
 			ShiftSnake();	
 			sect[0].Y-=Map::TileSize;
 		}
@@ -264,10 +297,10 @@ void Snake::Move(Direction Dir)
 	
 	if(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize))
 	{
-		
+		std::cout<<"stop";
 		PathToGo.clear();
-		X = sect[0].X;
-	    Y = sect[0].Y;
+		X = sect[1].X;
+	    Y = sect[1].Y;
 		dX = 0;
 		dY = 0;
 	

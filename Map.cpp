@@ -72,10 +72,10 @@ bool Map::Collide(int X, int Y, int Width, int Height) const
  //   Tiles[0].length()
     if (Xfin>Tiles[0].length()){Xfin=Tiles[0].length();}
     if (Yfin>MapSize){Yfin=MapSize;}
- 	std::cout
+/* 	std::cout
 //	 <<X<<" "<< Y<< " "
 	 <<	Xst <<" "<< Yst<< " "
-	 <<  Xfin << " " <<  Yfin<< "\n";
+	 <<  Xfin << " " <<  Yfin<< "\n";*/
     
 	for (int i = Xst; i < Xfin; i++)
 	{
