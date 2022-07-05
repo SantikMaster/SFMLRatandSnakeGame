@@ -20,12 +20,15 @@ class WorldManager
 	std::list<Character*> observers;
 	std::list<std::shared_ptr<Character>> Character_list;
 	
+	std::list<std::shared_ptr<Snake>> Snake_list;
 	
 	std::map<std::string, sf::Texture> TextureMap; 
 	
 	std::shared_ptr<sf::Clock> clock;
 	std::shared_ptr<sf::Clock> clock2;
+	
 	std::shared_ptr<Snake> Player;
+//	std::shared_ptr<Snake> I_Snake;
 	
 	std::shared_ptr<AStar> Star;
 //	std::shared_ptr<Map> WorldMap;
@@ -42,7 +45,7 @@ class WorldManager
 	float Velocity = 1.f;
 	
 	float SpawnTime;
-	float SpawnPass = 2;
+	float SpawnPass = 0.5;
 public:
 	void Attach(Character& o) 
 	 {
@@ -71,10 +74,10 @@ public:
 	void Draw(sf::RenderWindow* Window);
 	void AI_Move(Character &AI, float time);
 	void DrawFont(sf::RenderWindow *sf_win, const sf::Texture &t);
-	bool GoToDestination(float goY, float goX);
+	bool GoToDestination(float goY, float goX, Snake* player);
 	void CollideObjects(Character* player);
-	void GoToRandLocation();
-	void GoToNearestLocation();
+	void GoToRandLocation(Snake* player);
+	void GoToNearestLocation(Snake* player);
 	
 	void KeyboardEvent(sf::Event event, sf::RenderWindow *sf_win);
 	WorldManager();

@@ -52,8 +52,12 @@ WorldManager::WorldManager()
 	Star.get()->CollumsY = Map::MapSize+10;
 	Star.get()->Init();
 	
+//		std::cout << "log1";
+    Snake_list.push_back(std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*12, GetTimeSec(), this));
+   
 	Player = std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*3, GetTimeSec(), this);
-	
+//	I_Snake = std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*12, GetTimeSec(), this);
+//			std::cout << "log2";
 //	WorldMap = std::make_shared<Map>(TextureMap["map"]);
 	WorldMap = Map(TextureMap["map"]);
 	
@@ -88,15 +92,7 @@ void WorldManager::Detach(Character* o)
 			observers.erase(it);
 		}
 	}
-/*	for(auto it =observers.begin(); it!=observers.end(); it++)
-	{
-//		std::cout<< "Exist" << *it->Counter << "\n";
 	
-	}*/
-//	observers.remove(o);
-
-//	auto potato = observers.back();
-//    GoToDestination(potato->Y, potato->X);	
 }
 float WorldManager::GetTimeSec()
 {
@@ -142,10 +138,13 @@ void WorldManager::CollideObjects(Character* player)
 				&&(player->Y > potato ->Y)&&(player->Y <=potato->Y + Map::TileSize)
 				)
 			{
-	//			std::cout<<"Collide";
 						
-				Player->PickedPotato += 1;
-				Player->Grow();
+				player->PickedPotato += 1;
+				Snake* sn = dynamic_cast<Snake*>(player);
+		
+	        	if(sn!=nullptr)
+			    	sn->Grow();
+			    	
 				Detach(potato);
 		//		GoToNearestLocation();
 		//		std::cout<< " log 111\n";
@@ -155,7 +154,10 @@ void WorldManager::CollideObjects(Character* player)
 	}
 	if(Detached)
 	{
-		GoToNearestLocation();
+		Snake* sn = dynamic_cast<Snake*>(player);
+		
+		if(sn!=nullptr)
+	    	GoToNearestLocation(sn);
 	}
 		
 }
@@ -163,11 +165,17 @@ void WorldManager::Draw(sf::RenderWindow* Window)
 {
 	Window->clear();
 
-//	if(Player.get()->TestFlag) std::cout<< "draw Flag";
 	DrawFont(Window, TextureMap["map"]);
 
 	WorldMap.draw(Window);
 	Player.get()->draw(Window);
+//	I_Snake.get()->draw(Window);
+	for (auto o : Snake_list) 
+	{
+		auto sn = o.get();
+        sn->draw(Window);
+   	}
+
  	for (auto* o : observers) 
 	{
       o->draw(Window);
@@ -219,52 +227,42 @@ void WorldManager::Update()
 {
 	float timeSec = clock2.get()->getElapsedTime().asSeconds();
 
-//	if(-SpawnTime+timeSec>=1)
-//    {
-    	
-//	}
-  //  if(Player.get()->TestFlag) std::cout<< "upd Flag";
     if(-SpawnTime+timeSec>=SpawnPass)
     {
     //    std::cout<<"Spawned potato!!\n";
         SpawnTime=clock2.get()->getElapsedTime().asSeconds();
         Character_list.push_back(std::make_shared<Character>(TextureMap["potato"], this));
         
-        GoToNearestLocation();
-     //   GoToRandLocation();
+        GoToNearestLocation(Player.get());
+        
+        for (auto o : Snake_list) 
+    	{
+		     auto sn = o.get();
+      
+            GoToNearestLocation(sn);
+   	    }
+      
 	}
 
- /*       auto it = *std::min_element(observers.begin(), observers.end(), [](Character * a, Character * b, ) 
-		{
-            int Xr = a->X - Player.get().X;
-            int Yr = a->Y - Player.get().Y;
-            
-            int Xu = b->X - Player.get().X;
-            int Yu = b->Y - Player.get().Y;
-            
-      		return (Xr*Xr + Yr*Yr) > (Xu*Xu + Yu*Yu);
-		});
-		auto potato = *it;*/
-   //      std::sort(s.begin(), s.end(), [](int a, int b) {
-   //     return a > b;
-   // });
-   	//	auto potato = std::find(Character_list.begin(), Character_list.end(), [](std::shared_ptr<Character> a, std::shared_ptr<Character> b) {
-    ///  		 return a.get()->X > b.get()->X;
 
-
-//	std::cout << "adsada";
         
 
     
 	Player.get()->update(GetTimeMicrosec());
+	for (auto o : Snake_list) 
+    {
+		auto sn = o.get();
+      
+        sn->update(GetTimeMicrosec());
+   
+   	}
 	clock.get()->restart();
 }
 
-void WorldManager::GoToNearestLocation()
+void WorldManager::GoToNearestLocation(Snake *player) //* TO EDIT
 {
 	
-//	std::cout << "Nearest!";
-	auto player = Player.get();
+
 	
 	if(observers.empty())
 	{	
@@ -294,8 +292,8 @@ void WorldManager::GoToNearestLocation()
 	{
 		
 		auto Ch = it;
-		Star.get()->SetPath(&(Player.get()->PathToGo));
-		Player.get()->IsPathAvaible = true;	
+		Star.get()->SetPath(&(player->PathToGo));
+		player->IsPathAvaible = true;	
 //		std::cout << "Go Near"<< Ch->X<< " "<< Ch->Y<<"\n";
 	//	Player.get()->TestFlag = true;
 		
@@ -309,10 +307,10 @@ void WorldManager::GoToNearestLocation()
 			
 	}
 	else
-		GoToRandLocation();
+		GoToRandLocation(player);
 	
 }
-void WorldManager::GoToRandLocation()
+void WorldManager::GoToRandLocation(Snake *player) //* TO EDIT
 {
 
 	int i = 0;
@@ -331,8 +329,8 @@ void WorldManager::GoToRandLocation()
 			std::advance (it,std::rand()%Size);
 		Ch = *it;	
 
-//		std::cout << "Potato: " << Ch->Counter <<"\n";
-			auto player = Player.get();
+
+//			auto player = Player.get();
 		int X = Ch->X/Map::TileSize;
 		int Y = Ch->Y/Map::TileSize;
 		Star.get()->Start = &(Star.get()->Nodes[(int)(player->Y)/Map::TileSize][(int)(player->X)/Map::TileSize]);
@@ -345,8 +343,8 @@ void WorldManager::GoToRandLocation()
 	if (Star.get()->IsPathAvaible() )
 	{
 		
-		Star.get()->SetPath(&(Player.get()->PathToGo));
-		Player.get()->IsPathAvaible = true;	
+		Star.get()->SetPath(&(player->PathToGo));
+		player->IsPathAvaible = true;	
 		std::cout << "Go!!"<< Ch->X<< " "<< Ch->Y<<"\n";
 	//	Player.get()->TestFlag = true;
 		
@@ -361,15 +359,16 @@ void WorldManager::GoToRandLocation()
 	}
 	else
 	{
-		Player.get()->IsPathAvaible = false;	
+		player->IsPathAvaible = false;	
 		std::cout << "No path!!\n";	
 	}
 	
 }
 
-bool WorldManager::GoToDestination(float goY, float goX)
+bool WorldManager::GoToDestination(float goY, float goX, Snake *player) //* TO EDIT
 {
-	auto player = Player.get();
+//	auto player = Player.get();
+	
 	int X = goX/Map::TileSize;
 	int Y = goY/Map::TileSize;
 //		std::cout << "log go 1";
@@ -390,12 +389,12 @@ bool WorldManager::GoToDestination(float goY, float goX)
 	if (Star.get()->IsPathAvaible() )
 	{
 		
-		Star.get()->SetPath(&(Player.get()->PathToGo));
-		Player.get()->IsPathAvaible = true;	
+		Star.get()->SetPath(&(player->PathToGo));
+		player->IsPathAvaible = true;	
 		return true;
 			
 	}
-	Player.get()->IsPathAvaible = false;	
+	player->IsPathAvaible = false;	
 //	std::cout << "No path!!\n";
 	return false; 
 	
@@ -407,18 +406,13 @@ void WorldManager::KeyboardEvent(sf::Event event,  sf::RenderWindow *sf_win)
 	if (event.type==sf::Event::MouseButtonPressed)
 	{
 		sf::Vector2i position = sf::Mouse::getPosition(*sf_win);
-		GoToDestination(position.y, position.x);
-	
-//	player->PrintPath();
+		GoToDestination(position.y, position.x, player);
 	
 
 	}
 	if (event.type!=sf::Event::KeyPressed) return ;
 
-	
-			
-//	int x = sf::Mouse::getPosition(window).x / TileSize;
-//	int y = sf::Mouse::getPosition(window).y / TileSize;
+
 	
 	switch (event.key.code)
 	{
