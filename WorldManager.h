@@ -12,6 +12,7 @@ namespace sf
 }
 class Character;
 class Snake;
+class Beaver;
 class Map;
 class AStar;
 
@@ -27,7 +28,7 @@ class WorldManager
 	std::shared_ptr<sf::Clock> clock;
 	std::shared_ptr<sf::Clock> clock2;
 	
-	std::shared_ptr<Snake> Player;
+	std::shared_ptr<Beaver> Player;
 //	std::shared_ptr<Snake> I_Snake;
 	
 	std::shared_ptr<AStar> Star;
@@ -38,6 +39,7 @@ class WorldManager
     std::string potatoFont_str = "Textures/potato_font.png";
 	std::string potato_str = "Textures/potato.png";
 	std::string snake_str = "Textures/snake_head.png";
+	std::string beaver_str = "Textures/beaver.png";
 	
 	std::shared_ptr<sf::Sprite> Potato;
 	std::shared_ptr<sf::Sprite> PotatoFont;
@@ -45,7 +47,7 @@ class WorldManager
 	float Velocity = 1.f;
 	
 	float SpawnTime;
-	float SpawnPass = 0.5;
+	float SpawnPass = 2;
 public:
 	void Attach(Character& o) 
 	 {

@@ -48,12 +48,6 @@ public:
 	}	
 };
 
-class Beaver : public Character
-{
-	Beaver();
-	void SetRandXY(int tryX, int tryY, const Map& MapW);
-};
-
 enum Direction
 {
 	UP,
@@ -68,7 +62,7 @@ public:
 	Direction HeadDir = RIGHT;
 	int HeadPositionX = 30;
 	int HeadPositionY = 0;
-	int Lenght = 1;
+	int Lenght = 3;
 //	bool TestFlag = false;
 
 	std::vector<Section> sect;
@@ -88,4 +82,20 @@ public:
 	void PrintPath();
 	void Grow();
 };
+
+class Beaver : public Snake
+{
+public:
+	float CurrentFrame = 0;
+	float deltaFrame = 0.01;
+	int FramesX = 4, FramesY = 4; 
+	
+	Beaver();
+	Beaver(const sf::Texture &image, WorldManager *sb);
+	
+	void SetRandXY(int tryX, int tryY, const Map& MapW);
+	void draw(sf::RenderWindow *sf_win) override;
+	void update(float time) override;
+};
+
 
