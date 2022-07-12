@@ -455,7 +455,32 @@ void Beaver::update(float time)
 {	
 //	sprite.setPosition(X - WorldManager::offsetX, Y - WorldManager::offsetY);
 //	sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
-
+	
+	if (DigHole)
+	{
+		CurrentFrame += deltaFrame*time;
+		if(CurrentFrame > FramesX)
+        {
+            CurrentFrame = 0;
+	    }
+			sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
+			sprite.setTextureRect(sf::IntRect(121*int(CurrentFrame)+120, 0, Width , Height));
+	//			std::cout<<DigHoleStartTime<<" "<< World->GetTimeSec()<<"\n";
+		if ((-DigHoleStartTime + World->GetTimeSec() )> DigingTime)
+     	{
+		    WorldManager::WorldMap.EraseWall(X, Y);
+			WorldManager::WorldMap.EraseWall(X+Map::TileSize, Y);	
+			WorldManager::WorldMap.EraseWall(X-Map::TileSize, Y);	
+			WorldManager::WorldMap.EraseWall(X, Y+Map::TileSize);	
+			WorldManager::WorldMap.EraseWall(X, Y-Map::TileSize);	
+	        DigHole = false;	
+	    }	
+	}
+    else
+{
+    	
+	
+	
 	X += dX*time*0.0001;
 	Y += dY*time*0.0001;	
 	
@@ -464,8 +489,6 @@ void Beaver::update(float time)
 	if (FreeTilesInFront(X, Y, dX, dY, XTile, YTile) == true)
 		{
 
-		//	if (dY!=0) X = XTile;
-		//	if (dX!=0) Y = YTile;
 		    if (dX==0)X = XTile;
 		    if (dY==0)Y = YTile;
 		
@@ -487,49 +510,51 @@ void Beaver::update(float time)
 		}
 		
 	}
-	
+	World->CollideObjects(this);	
 
 	//	else
 
 	
-	CurrentFrame += deltaFrame;
+	CurrentFrame += deltaFrame*time;
 //	FramesX = 5;
-//	std::cout<<CurrentFrame<<"\n";
+//	std::cout<<deltaFrame<< " "<<time << " " << deltaFrame*time<<"\n";
 	if(CurrentFrame > FramesX)
     {
         CurrentFrame = 0;
 	}
 	if(dY>0)
 	{	
-		sprite.setPosition(X - WorldManager::offsetX - 10, Y - 20 - WorldManager::offsetY);
-		sprite.setTextureRect(sf::IntRect(48*int(CurrentFrame)+0, 0, Width , Height));	
+		sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
+		sprite.setTextureRect(sf::IntRect(120*int(CurrentFrame)+0, 120, Width , Height));
 	}
 	if(dY<0)
 	{
-		sprite.setPosition(X - WorldManager::offsetX - 10, Y - WorldManager::offsetY);
-		sprite.setTextureRect(sf::IntRect(48*int(CurrentFrame)+0, 150, Width , Height));		
+		sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
+		sprite.setTextureRect(sf::IntRect(121*int(CurrentFrame)+0, 360, Width , Height));	
 	}
 	if(dX<0)
 	{
-		sprite.setPosition(X - WorldManager::offsetX, Y - 20 - WorldManager::offsetY);	
-		sprite.setTextureRect(sf::IntRect(48*int(CurrentFrame)+0, 50, Width , Height));	
+		sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
+		sprite.setTextureRect(sf::IntRect(121*int(CurrentFrame)+0, 240, Width , Height));	
 	}
 	if(dX>0)
 	{	
 		sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
-		sprite.setTextureRect(sf::IntRect(48*int(CurrentFrame)+0, 100, Width , Height));	
+		sprite.setTextureRect(sf::IntRect(121*int(CurrentFrame)+Width, 240, -Width , Height));	
 	}
-	if(dX == 0 && dY == 0 )
+    if(dX == 0 && dY == 0 )
 	{	
 		sprite.setPosition(X - WorldManager::offsetX - 10, Y - 20 - WorldManager::offsetY);
 		sprite.setTextureRect(sf::IntRect(0+0, 0, Width , Height));	
-	}
 		
+		
+	}
+
 	//	sprite.setPosition(rect.left, rect.top);
 	
 //		sprite.setPosition(X -10, Y -30);
 //	std::cout<<X<<"\n";
-	
+}	
 }
 Beaver::Beaver(const sf::Texture &image, WorldManager *sb)
 {
@@ -546,10 +571,10 @@ Beaver::Beaver(const sf::Texture &image, WorldManager *sb)
 
 	}/**/
 			
-	Width = 50;
-	Height = 50;
-	sprite.setTextureRect(sf::IntRect(0, 0, 50 , 50));// start position
-	sprite.scale(1.f, 1.f);
+	Width = 120;
+	Height = 120;
+	sprite.setTextureRect(sf::IntRect(0, 0, 100 , 100));// start position
+	sprite.scale(0.5f, 0.5f);
 	sprite.setPosition(X , Y);
 	
 //	std::cout<<"log";

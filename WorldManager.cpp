@@ -96,7 +96,7 @@ void WorldManager::Detach(Character* o)
 }
 float WorldManager::GetTimeSec()
 {
-	sf::Time elapsed1 = clock.get()->getElapsedTime();
+	sf::Time elapsed1 = clock2.get()->getElapsedTime();
 	return elapsed1.asSeconds() ;
 }
 int WorldManager::GetTimeMicrosec()
@@ -133,16 +133,25 @@ void WorldManager::CollideObjects(Character* player)
 		Character *potato = dynamic_cast<Character*>(*o);
 		if (potato)
 		{
-			if ((player->X > potato->X)&&(player->X <= potato ->X + Map::TileSize)
-				&&(player->Y > potato ->Y)&&(player->Y <=potato->Y + Map::TileSize)
+			Beaver* bv = dynamic_cast<Beaver*>(player);
+			int pX = player->X ;
+			int pY = player->Y;
+			if(bv!=nullptr)
+			{
+				pX += Map::TileSize; 
+				pY += Map::TileSize; 
+			}
+			    
+			if ((pX> potato->X)&&(pX<= potato ->X + Map::TileSize)
+				&&(pY > potato ->Y)&&(pY <=potato->Y + Map::TileSize)
 				)
 			{
 						
-				player->PickedPotato += 1;
-				Snake* sn = dynamic_cast<Snake*>(player);
+		    	player->PickedPotato += 1;
+					Snake* sn = dynamic_cast<Snake*>(player);
 		
 	        	if(sn!=nullptr)
-			    	sn->Grow();
+			    	sn->Grow(); 
 			    	
 				Detach(potato);
 		//		GoToNearestLocation();
@@ -427,8 +436,17 @@ void WorldManager::KeyboardEvent(sf::Event event,  sf::RenderWindow *sf_win)
 			if(player->dX<1)player->dX += 1;
 			player->dY = 0;
 		break;
-	
 
+		case sf::Keyboard::E:
+			player->DigHole = true;
+			player->DigHoleStartTime = GetTimeSec();
+		//	DigHole();
+		break;
+		
+		case sf::Keyboard::Q:
+		
+			WorldMap.BuildWall(player->X, player->Y, player->dX, player->dY);
+		break;
 		};
 	}
 	else 

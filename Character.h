@@ -83,12 +83,15 @@ public:
 	void Grow();
 };
 
-class Beaver : public Snake
+class Beaver : public Character
 {
 public:
 	float CurrentFrame = 0;
-	float deltaFrame = 0.01;
-	int FramesX = 4, FramesY = 4; 
+	float deltaFrame = 0.00001;
+	int FramesX = 3; 
+	int DigingTime = 1.5;
+	bool DigHole = false;
+	float DigHoleStartTime;
 	
 	Beaver();
 	Beaver(const sf::Texture &image, WorldManager *sb);

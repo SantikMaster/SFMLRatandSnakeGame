@@ -42,7 +42,7 @@ Map::draw(sf::RenderWindow *sf_win)
 			}
 			else if(Tiles[i][j] == 'r')
 			{
-				s.setTextureRect(sf::IntRect(290, 940, 60 , 60 ));
+				s.setTextureRect(sf::IntRect(310, 980, 60 , 60 ));
 				//rectangle.setFillColor(sf::Color::Green);	
 			}
 			else if(Tiles[i][j] == 'w')
@@ -56,9 +56,22 @@ Map::draw(sf::RenderWindow *sf_win)
 			sf_win->draw(s);
 		}
 	}
-
-
 }	
+void Map::BuildWall(int X, int Y, float dX, float dY)
+{
+	if (dX>0)
+		Tiles[(int)Y/TileSize][(int)X/TileSize-1] = 'r';
+	if (dY>0)
+		Tiles[(int)Y/TileSize-1][(int)X/TileSize] = 'r';
+	if (dX<0)
+		Tiles[(int)Y/TileSize][(int)X/TileSize+2] = 'r';
+	if (dY<0)
+		Tiles[(int)Y/TileSize+2][(int)X/TileSize] = 'r';				
+}
+void Map::EraseWall(int X, int Y)
+{
+	if(	Tiles[(int)Y/TileSize][(int)X/TileSize] != '0') Tiles[(int)Y/TileSize][(int)X/TileSize] = ' ';
+}
 bool Map::Collide(int X, int Y, int Width, int Height) const
 {
 	// метод должен карте принадлежать

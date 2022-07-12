@@ -39,7 +39,8 @@ class WorldManager
     std::string potatoFont_str = "Textures/potato_font.png";
 	std::string potato_str = "Textures/potato.png";
 	std::string snake_str = "Textures/snake_head.png";
-	std::string beaver_str = "Textures/beaver.png";
+//	std::string beaver_str = "Textures/beaver.png";
+	std::string beaver_str = "Textures/Rat.png";
 	
 	std::shared_ptr<sf::Sprite> Potato;
 	std::shared_ptr<sf::Sprite> PotatoFont;
