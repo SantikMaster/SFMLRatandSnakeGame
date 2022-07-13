@@ -6,12 +6,13 @@ class Map
 	sf::Sprite sprite;
 public:
 	static const int MapSize = 16;
-	static const int TileSize = 30;
+	static const int TileSize = 40;
 	
 	std::string Tiles[ MapSize];
 	Map(sf::Texture);
 	Map() = default;
 	
+	void Initialize();
 	void BuildWall(int X, int Y, float dX, float dY);
 	void EraseWall(int X, int Y);
 	draw(sf::RenderWindow *sf_win);

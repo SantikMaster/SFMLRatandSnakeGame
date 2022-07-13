@@ -85,6 +85,7 @@ public:
 
 class Beaver : public Character
 {
+	bool Alive = true;
 public:
 	float CurrentFrame = 0;
 	float deltaFrame = 0.00001;
@@ -99,6 +100,7 @@ public:
 	void SetRandXY(int tryX, int tryY, const Map& MapW);
 	void draw(sf::RenderWindow *sf_win) override;
 	void update(float time) override;
+	void Die();
 };
 
 

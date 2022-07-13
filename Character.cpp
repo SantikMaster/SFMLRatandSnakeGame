@@ -22,7 +22,6 @@ void Character::update(float time)
 	{
 		X -= dX*time*0.0001;
 		Y -= dY*time*0.0001;
-//				std::cout<<"stop origin";
 			
 				return;	
 	}
@@ -55,7 +54,13 @@ Character::Character(const sf::Texture &image, WorldManager *sb)
 }
 void Character::draw(sf::RenderWindow *sf_win)
 {
+
 	sf_win->draw(sprite);
+/*	sf::CircleShape circle;
+	circle.setRadius(5);
+	circle.setOutlineColor(sf::Color::Red);
+	circle.setPosition(X, Y);
+	sf_win->draw(circle);*/
 }
 
 Snake::Snake(sf::Texture Txtr, int tX, int tY, float SpawnT = 0, WorldManager *sb= nullptr)
@@ -125,7 +130,9 @@ void Snake::MoveAlongPath()
 	{
 		dX = 0;
 		dY = 0;
-
+		
+//		SnakesGoToBeavers();
+		World->GoToNearestBeaver(this);
 	    return;
 	}
 	
@@ -381,7 +388,12 @@ void Beaver::SetRandXY(int tryX, int tryY, const Map& WorldMap)
 }
 void Beaver::draw(sf::RenderWindow *sf_win)
 {
-	this->Character::draw(sf_win);
+	if (Alive)
+		this->Character::draw(sf_win);
+}
+void Beaver::Die()
+{
+	Alive = false;
 }
 bool FreeTilesInFront(int X, int Y, float dX, float dY, int &XTile, int &YTile)
 {
@@ -484,6 +496,7 @@ void Beaver::update(float time)
 	X += dX*time*0.0001;
 	Y += dY*time*0.0001;	
 	
+
 	int XTile = 0;
 	int YTile = 0;
 	if (FreeTilesInFront(X, Y, dX, dY, XTile, YTile) == true)
@@ -510,7 +523,7 @@ void Beaver::update(float time)
 		}
 		
 	}
-	World->CollideObjects(this);	
+	World->CollideObjects(this);
 
 	//	else
 
@@ -574,7 +587,7 @@ Beaver::Beaver(const sf::Texture &image, WorldManager *sb)
 	Width = 120;
 	Height = 120;
 	sprite.setTextureRect(sf::IntRect(0, 0, 100 , 100));// start position
-	sprite.scale(0.5f, 0.5f);
+	sprite.scale(0.5f*Map::TileSize/30, 0.5f*Map::TileSize/30);
 	sprite.setPosition(X , Y);
 	
 //	std::cout<<"log";

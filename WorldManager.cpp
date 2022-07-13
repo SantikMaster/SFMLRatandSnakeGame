@@ -54,15 +54,17 @@ WorldManager::WorldManager()
 	Star.get()->CollumsX = Map::MapSize+10;
 	Star.get()->CollumsY = Map::MapSize+10;
 	Star.get()->Init();
+	WorldMap = Map(TextureMap["map"]);	
 	
- //   Snake_list.push_back(std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*12, GetTimeSec(), this));
+	Restart();
+   /* Snake_list.push_back(std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*12, GetTimeSec(), this));
    
 	Player = std::make_shared<Beaver>(TextureMap["beaver"],  this);
 
 	Player->X = 150;
-	Player->Y = 330; 
+	Player->Y = 330; */
 
-	WorldMap = Map(TextureMap["map"]);
+
 	
 	
 	Potato = std::make_shared<sf::Sprite>();
@@ -80,12 +82,23 @@ WorldManager::WorldManager()
 	
 
 }
+void WorldManager::Restart()
+{
+	Player.reset();
+	Player = std::make_shared<Beaver>(TextureMap["beaver"],  this);
+	
+	Snake_list.clear();
+	Snake_list.push_back(std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*12, GetTimeSec(), this));
+	Player->X = 150;
+	Player->Y = 330; 
+	
+	WorldMap.Initialize();
+}
 void WorldManager::Detach(Character* o)
 {
 	auto it = observers.begin();
 	for( it = observers.begin();it!=observers.end();it++)
 	{
-//		std::cout << "Exists: " << *(*it)->Counter <<"\n";
 		if (*it == o)
 		{
 			std::cout<< "REMOVED" << o->Counter << "\n";
@@ -126,6 +139,11 @@ void WorldManager::push_back(sf::RectangleShape &Obj)
 }
 void WorldManager::CollideObjects(Character* player)
 {
+// --- potatoes colide
+	int pX = player->X ;
+	int pY = player->Y;
+	Snake* sn = dynamic_cast<Snake*>(player);
+	
 	bool Detached = false;
 	for (auto o = observers.begin(); o!=observers.end(); o++) 
 	{
@@ -134,21 +152,21 @@ void WorldManager::CollideObjects(Character* player)
 		if (potato)
 		{
 			Beaver* bv = dynamic_cast<Beaver*>(player);
-			int pX = player->X ;
-			int pY = player->Y;
 			if(bv!=nullptr)
 			{
+				pX = player->X ;
+				pY = player->Y;
 				pX += Map::TileSize; 
 				pY += Map::TileSize; 
 			}
 			    
-			if ((pX> potato->X)&&(pX<= potato ->X + Map::TileSize)
-				&&(pY > potato ->Y)&&(pY <=potato->Y + Map::TileSize)
+			if ((pX>= potato->X)&&(pX<= potato ->X + Map::TileSize)
+				&&(pY >= potato ->Y)&&(pY <=potato->Y + Map::TileSize)
 				)
 			{
 						
 		    	player->PickedPotato += 1;
-					Snake* sn = dynamic_cast<Snake*>(player);
+				
 		
 	        	if(sn!=nullptr)
 			    	sn->Grow(); 
@@ -164,8 +182,27 @@ void WorldManager::CollideObjects(Character* player)
 	{
 		Snake* sn = dynamic_cast<Snake*>(player);
 		
-		if(sn!=nullptr)
-	    	GoToNearestLocation(sn);
+//		if(sn!=nullptr)
+//	    	GoToNearestLocation(sn);
+	}
+	// -- beavers collide
+	if(sn!=nullptr)
+	{
+		pX = player->X;
+		pY = player->Y;
+		int beaverX = Player.get()->X;
+		int beaverY = Player.get()->Y;
+		if ((pX>= beaverX - Map::TileSize)&&(pX<= beaverX + Map::TileSize)
+				&&(pY >= beaverY- 2*Map::TileSize)&&(pY <=beaverY + 2*Map::TileSize)
+				)
+			{
+						
+	//	    	player->PickedPotato += 1;
+				
+			    sn->Grow(); 
+			    std::cout<<"Rat die!!! \n";
+			    Player.get()->Die();
+			}	
 	}
 		
 }
@@ -177,7 +214,6 @@ void WorldManager::Draw(sf::RenderWindow* Window)
 
 	WorldMap.draw(Window);
 	Player.get()->draw(Window);
-//	I_Snake.get()->draw(Window);
 	for (auto o : Snake_list) 
 	{
 		auto sn = o.get();
@@ -196,32 +232,7 @@ void WorldManager::Draw(sf::RenderWindow* Window)
 }
 void WorldManager::AI_Move(Character &AI, float time)
 {
-/*	bool OnGrTemp = AI.OnGround;
-	int tempX = AI.X;
-	int tempY = AI.Y;
-	if(AI.AI_LeftMove == true)
-	{
-		AI.dX = Velocity/2;
-	}
-	else AI.dX = -Velocity/2;
-	
-	
-	AI.update(time);
-	if( OnGrTemp != AI.OnGround )
-	{
-		AI.dY = -Velocity*(1-std::rand()%3);
-		AI.dX = -2*Velocity*(1-std::rand()%3);
-		AI.AI_LeftMove = ( std::rand()%2);
-		AI.OnGround = false;
-		AI.update(time);
-	}
-	if(AI.X == tempX)
-	{
-		AI.dY = -Velocity*(1-std::rand()%3);
-		AI.AI_LeftMove = ( std::rand()%2);
-		AI.OnGround = false;
-		AI.update(time);
-	}*/
+
 }
 void WorldManager::DrawFont(sf::RenderWindow *sf_win, const sf::Texture &t)
 {
@@ -231,31 +242,30 @@ void WorldManager::DrawFont(sf::RenderWindow *sf_win, const sf::Texture &t)
 	sf_win->draw(*font);
 	
 }
+void WorldManager::SnakesGoToBeavers()
+{
+	for (auto o : Snake_list) 
+    {
+		auto sn = o.get();
+      
+        GoToNearestBeaver(sn);
+   	}
+	
+}
 void WorldManager::Update()
 {
 	float timeSec = clock2.get()->getElapsedTime().asSeconds();
 
-    if(-SpawnTime+timeSec>=SpawnPass)
+    if(-SpawnTime+timeSec>=SpawnPass && Character_list.size()<MaxPotatoes)
     {
-    //    std::cout<<"Spawned potato!!\n";
+
         SpawnTime=clock2.get()->getElapsedTime().asSeconds();
         Character_list.push_back(std::make_shared<Character>(TextureMap["potato"], this));
+		
+		SnakesGoToBeavers();
         
-  //      GoToNearestLocation(Player.get());
-        
-        for (auto o : Snake_list) 
-    	{
-		     auto sn = o.get();
-      
-            GoToNearestLocation(sn);
-   	    }
-      
-	}
-
-
-        
-
-    
+   	}
+  
 	Player.get()->update(GetTimeMicrosec());
 	for (auto o : Snake_list) 
     {
@@ -267,7 +277,7 @@ void WorldManager::Update()
 	clock.get()->restart();
 }
 
-void WorldManager::GoToNearestLocation(Snake *player) //* TO EDIT
+void WorldManager::GoToNearestPotato(Snake *player) //* TO EDIT
 {
 	
 
@@ -290,6 +300,7 @@ void WorldManager::GoToNearestLocation(Snake *player) //* TO EDIT
 		
 	int X = it->X/Map::TileSize;
 	int Y = it->Y/Map::TileSize;
+//	Star.get()->Init();
 	Star.get()->Start = &(Star.get()->Nodes[(int)(player->Y)/Map::TileSize][(int)(player->X)/Map::TileSize]);
 	Star.get()->End = &(Star.get()->Nodes[Y][X]);
 	
@@ -312,10 +323,32 @@ void WorldManager::GoToNearestLocation(Snake *player) //* TO EDIT
 			
 	}
 	else
-		GoToRandLocation(player);
+		GoToRandPotato(player);
 	
 }
-void WorldManager::GoToRandLocation(Snake *player) //* TO EDIT
+void WorldManager::GoToNearestBeaver(Snake *snake) //* TO EDIT
+{
+
+	int X = Player.get()->X/Map::TileSize;
+	int Y = Player.get()->Y/Map::TileSize;
+	
+	Star.get()->Init();
+	Star.get()->Start = &(Star.get()->Nodes[(int)(snake->Y)/Map::TileSize][(int)(snake->X)/Map::TileSize]);
+	Star.get()->End = &(Star.get()->Nodes[Y][X]);
+	
+	Star.get()->LoadMap(WorldMap);
+	Star.get()->AStarAlg();
+		
+	if (Star.get()->IsPathAvaible() )
+	{
+		Star.get()->SetPath(&(snake->PathToGo));
+		snake->IsPathAvaible = true;				
+	}
+	else
+		snake->IsPathAvaible = false;
+	
+}
+void WorldManager::GoToRandPotato(Snake *player) //* TO EDIT
 {
 
 	int i = 0;
@@ -449,14 +482,7 @@ void WorldManager::KeyboardEvent(sf::Event event,  sf::RenderWindow *sf_win)
 		break;
 		};
 	}
-	else 
-	{
-	
-	}
-
-
-	
-	
+		
 	
 }
 

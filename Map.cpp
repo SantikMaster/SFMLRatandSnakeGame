@@ -9,18 +9,21 @@ Map::Map(sf::Texture Txtr)
 	texture = Txtr;
 	sprite.setTexture(texture);
 	sprite.setTextureRect(sf::IntRect(0, 0, 100 , 100 ));
-	
+
+}
+void Map::Initialize()
+{
 	for (int i = 0; i < MapSize; i++)
 	{
 		Tiles[i] = Level[i];
-	}
+	}	
 }
 Map::draw(sf::RenderWindow *sf_win)
 {
 	sf::Sprite s;
     s.setTexture(texture);
 	s.setTextureRect(sf::IntRect(230, 960, 60 , 60 ));
-	s.scale(0.5f, 0.5f);
+	s.scale(0.5f*TileSize/30, 0.5f*TileSize/30);
 
 	for (int i = 0; i < MapSize; i++)
 	{
@@ -52,7 +55,6 @@ Map::draw(sf::RenderWindow *sf_win)
 			}
 			          
 			s.setPosition(j*TileSize - WorldManager::offsetX, i*TileSize - WorldManager::offsetY);
-//	s.setPosition(j*TileSize , i*TileSize );
 			sf_win->draw(s);
 		}
 	}
@@ -64,9 +66,18 @@ void Map::BuildWall(int X, int Y, float dX, float dY)
 	if (dY>0)
 		Tiles[(int)Y/TileSize-1][(int)X/TileSize] = 'r';
 	if (dX<0)
-		Tiles[(int)Y/TileSize][(int)X/TileSize+2] = 'r';
+	{
+		if (X%TileSize<5)
+			Tiles[(int)Y/TileSize][(int)X/TileSize+1] = 'r';
+		else Tiles[(int)Y/TileSize][(int)X/TileSize+2] = 'r';
+	}
+		
 	if (dY<0)
-		Tiles[(int)Y/TileSize+2][(int)X/TileSize] = 'r';				
+	{
+		if (Y%TileSize<5)
+			Tiles[(int)Y/TileSize+1][(int)X/TileSize] = 'r';
+		else Tiles[(int)Y/TileSize+2][(int)X/TileSize] = 'r';
+	}				
 }
 void Map::EraseWall(int X, int Y)
 {
@@ -85,10 +96,6 @@ bool Map::Collide(int X, int Y, int Width, int Height) const
  //   Tiles[0].length()
     if (Xfin>Tiles[0].length()){Xfin=Tiles[0].length();}
     if (Yfin>MapSize){Yfin=MapSize;}
-/* 	std::cout
-//	 <<X<<" "<< Y<< " "
-	 <<	Xst <<" "<< Yst<< " "
-	 <<  Xfin << " " <<  Yfin<< "\n";*/
     
 	for (int i = Xst; i < Xfin; i++)
 	{
@@ -99,10 +106,7 @@ bool Map::Collide(int X, int Y, int Width, int Height) const
 				return true;	
 			}
 		}
-	}
-
-	
-	
+	}	
 	
 	return false;
 }

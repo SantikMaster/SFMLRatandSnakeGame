@@ -19,10 +19,10 @@ MenuManager::MenuManager()
     text->setCharacterSize(48);
     text->setColor(sf::Color::White);
 	
-	MenuItems.push_back("Start");
-	MenuItems.push_back("In2");
-	MenuItems.push_back("Start3");
-	MenuItems.push_back("Start4");	
+	MenuItems.push_back("Start/Resume");
+	MenuItems.push_back("Restart");
+	MenuItems.push_back("I3");
+	MenuItems.push_back("I4");	
 	MenuItems.push_back("Exit");
 	MenuItems.shrink_to_fit();
 }
@@ -53,9 +53,13 @@ int MenuManager::KeyboardEvent(sf::Event event)
 			{  // Game Start on First field
 				return 1;
 			}
+			if (Selected == 1) 
+			{  // Game Start on First field
+				return 2;
+			}
 			if (Selected == MenuItems.size()-1)
 			{// Game End on Last Field
-				return 2;	
+				return 4;	
 			}
 		break;
 		

@@ -9,7 +9,7 @@
 
 Engine::Engine()
 {
-	Window = std::make_shared<sf::RenderWindow>(sf::VideoMode(500, 500), "SFML works!");
+	Window = std::make_shared<sf::RenderWindow>(sf::VideoMode(700, 700), "SFML works!");
 	World = std::make_shared<WorldManager>();
 	Menu = std::make_shared<MenuManager>();	
 	
@@ -45,7 +45,12 @@ void Engine::HandleEvents()
 			{
 				state = GAME_ST;	
 			}
-			else if (Result==2) Window.get()->close();
+			else if (Result==2) 
+			{
+				state = GAME_ST;
+				World.get()->Restart();	
+			}
+			else if (Result==4) Window.get()->close();
 		}
 		if(state == GAME_ST)
 		{
