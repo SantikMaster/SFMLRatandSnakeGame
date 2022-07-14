@@ -5,12 +5,20 @@
 #include "Engine.h"
 #include "Menu.h"
 #include "WorldManager.h"
+/*	enum State
+	{	
+		INIT_ST,
+		MENU_ST,
+		GAME_ST,
+		LOSE_ST,
+		WIN_ST,
+	};*/
 
 
 Engine::Engine()
 {
 	Window = std::make_shared<sf::RenderWindow>(sf::VideoMode(700, 700), "SFML works!");
-	World = std::make_shared<WorldManager>();
+	World = std::make_shared<WorldManager>(this);
 	Menu = std::make_shared<MenuManager>();	
 	
 	sf::CircleShape shape(100.f);
@@ -88,6 +96,11 @@ void Engine::Draw()
 		case GAME_ST:
 			World.get()->Update();	
 			World.get()->Draw(Window.get());		
+		break;
+		case LOSE_ST:
+//			World.get()->Update();	
+//			World.get()->Draw(Window.get());
+					
 		break;
 	}
 

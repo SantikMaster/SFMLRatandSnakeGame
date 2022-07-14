@@ -16,9 +16,9 @@ class WorldManager;
 class Character
 {
 
-	
+
 public:	
-    WorldManager * World;
+	WorldManager * World;
 	
 	static int Amount;
 	int Counter = 0;
@@ -93,6 +93,7 @@ public:
 	int DigingTime = 1.5;
 	bool DigHole = false;
 	float DigHoleStartTime;
+	int Bomb = 5;
 	
 	Beaver();
 	Beaver(const sf::Texture &image, WorldManager *sb);

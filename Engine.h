@@ -8,19 +8,22 @@ namespace sf
 }
 class WorldManager;
 class MenuManager;
-
+class BannerManager;
 	
 class Engine
 {
+
+	
+public:
 	enum State
 	{	
 		INIT_ST,
 		MENU_ST,
 		GAME_ST,
+		LOSE_ST,
+		WIN_ST,
 	};
 
-	
-public:
 	State state = INIT_ST;
 	void Run();
 	void Stop();
@@ -32,5 +35,6 @@ public:
 	std::shared_ptr<WorldManager> World;
 	std::shared_ptr<MenuManager> Menu;
 	std::list<sf::CircleShape> ObjList;
-	std::shared_ptr<sf::RenderWindow> Window;	
+	std::shared_ptr<sf::RenderWindow> Window;
+	std::shared_ptr<BannerManager> Banner;	
 };

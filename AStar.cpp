@@ -14,10 +14,6 @@ AStar::AStar()
 	CollumsY  = 10;
 
 	Init();
-
-	
-
-
 }
 void AStar::Init()
 {

@@ -6,16 +6,31 @@
 #include "Character.h"
 #include "AStar.h"
 #include "Node.h"
+#include "Engine.h"
 #include <SFML/Graphics.hpp>
 int	WorldManager::offsetX ;
 int	WorldManager::offsetY ;
 Map WorldManager::WorldMap;
 
-WorldManager::WorldManager()
+WorldManager::WorldManager(Engine* Engine)
 {
+	C_Engine = Engine;
 	WorldManager::offsetX = 0;
 	WorldManager::offsetY = 0;
 
+	std::string myfontFileName="Arial.ttf";
+	p_myFont = std::make_shared<sf::Font>();
+	p_Text = std::make_shared<sf::Text>();
+	auto text = p_Text.get();
+	
+    if (!p_myFont.get()->loadFromFile(myfontFileName))
+        {
+        std::cout << "Could not find the font " << myfontFileName << std::endl;
+        }
+        
+   	text->setFont(*p_myFont.get());
+    text->setCharacterSize(48);
+    text->setColor(sf::Color::White);
 
 	sf::Texture t;
     if(!t.loadFromFile(map_str))
@@ -77,7 +92,7 @@ WorldManager::WorldManager()
 	potato->scale(0.5f, 0.5f);
 	
 	font->setTexture(TextureMap["font"]);
-	font->setTextureRect(sf::IntRect(0, 0, 600 , 600 ));
+	font->setTextureRect(sf::IntRect(0, 0, 2000 , 2000 ));
 	font->scale(0.5f, 0.5f);	
 	
 
@@ -166,7 +181,10 @@ void WorldManager::CollideObjects(Character* player)
 			{
 						
 		    	player->PickedPotato += 1;
-				
+				if(bv!=nullptr)
+				{
+					bv->Bomb++;
+				}
 		
 	        	if(sn!=nullptr)
 			    	sn->Grow(); 
@@ -201,6 +219,7 @@ void WorldManager::CollideObjects(Character* player)
 				
 			    sn->Grow(); 
 			    std::cout<<"Rat die!!! \n";
+			    C_Engine->state = Engine::LOSE_ST;
 			    Player.get()->Die();
 			}	
 	}
@@ -213,6 +232,8 @@ void WorldManager::Draw(sf::RenderWindow* Window)
 	DrawFont(Window, TextureMap["map"]);
 
 	WorldMap.draw(Window);
+	DrawScoreAndStoppers(Window);
+	
 	Player.get()->draw(Window);
 	for (auto o : Snake_list) 
 	{
@@ -230,6 +251,32 @@ void WorldManager::Draw(sf::RenderWindow* Window)
     
     
 }
+void WorldManager::DrawScoreAndStoppers(sf::RenderWindow *sf_win)
+{
+	sf::RectangleShape rectangle(sf::Vector2f(18*Map::TileSize, 4*Map::TileSize));
+	rectangle.setPosition(00,15*Map::TileSize);
+	rectangle.setFillColor(sf::Color(50, 150, 40));
+	
+	sf_win->draw(rectangle);
+
+
+	if (Player.get()!=nullptr)
+	{
+		p_Text.get()->setCharacterSize(36);
+	
+		std::string ScoreTxt;
+		ScoreTxt = "Score: " + std::to_string(Player.get()->PickedPotato);
+		p_Text.get()->setString(ScoreTxt);
+		p_Text.get()->setPosition(50, 16*Map::TileSize);
+		sf_win->draw(*p_Text.get());
+		
+		ScoreTxt = "Bomb: " + std::to_string(Player->Bomb);
+		p_Text.get()->setString(ScoreTxt);
+		p_Text.get()->setPosition(200, 16*Map::TileSize);
+		sf_win->draw(*p_Text.get());
+	}
+	
+}
 void WorldManager::AI_Move(Character &AI, float time)
 {
 
@@ -237,9 +284,17 @@ void WorldManager::AI_Move(Character &AI, float time)
 void WorldManager::DrawFont(sf::RenderWindow *sf_win, const sf::Texture &t)
 {
 	auto font = PotatoFont.get();
-	int TreeX = 100, TreeY = 130;
+	int TreeX = 00, TreeY = 00;
 	font->setPosition(TreeX - offsetX/5, TreeY-offsetY/5);
 	sf_win->draw(*font);
+	
+	sf::RectangleShape rectangle(sf::Vector2f(18*Map::TileSize, 18*Map::TileSize));
+	rectangle.setPosition(00,0);
+	rectangle.setFillColor(sf::Color(00, 0, 0, 100));
+	rectangle.setOutlineThickness(0.f);
+	
+	sf_win->draw(rectangle);
+
 	
 }
 void WorldManager::SnakesGoToBeavers()
@@ -256,15 +311,18 @@ void WorldManager::Update()
 {
 	float timeSec = clock2.get()->getElapsedTime().asSeconds();
 
-    if(-SpawnTime+timeSec>=SpawnPass && Character_list.size()<MaxPotatoes)
+    if((-SpawnTime+timeSec)>=SpawnPass)
     {
-
-        SpawnTime=clock2.get()->getElapsedTime().asSeconds();
-        Character_list.push_back(std::make_shared<Character>(TextureMap["potato"], this));
-		
-		SnakesGoToBeavers();
-        
+    	std::cout<< "tick\n";
+    	SnakesGoToBeavers();
+		if(observers.size()<MaxPotatoes)
+		{
+			SpawnTime=clock2.get()->getElapsedTime().asSeconds();
+       		Character_list.push_back(std::make_shared<Character>(TextureMap["potato"], this));	
+		}
+        clock2->restart();    
    	}
+  
   
 	Player.get()->update(GetTimeMicrosec());
 	for (auto o : Snake_list) 
@@ -300,7 +358,6 @@ void WorldManager::GoToNearestPotato(Snake *player) //* TO EDIT
 		
 	int X = it->X/Map::TileSize;
 	int Y = it->Y/Map::TileSize;
-//	Star.get()->Init();
 	Star.get()->Start = &(Star.get()->Nodes[(int)(player->Y)/Map::TileSize][(int)(player->X)/Map::TileSize]);
 	Star.get()->End = &(Star.get()->Nodes[Y][X]);
 	
@@ -332,11 +389,12 @@ void WorldManager::GoToNearestBeaver(Snake *snake) //* TO EDIT
 	int X = Player.get()->X/Map::TileSize;
 	int Y = Player.get()->Y/Map::TileSize;
 	
-	Star.get()->Init();
+	Star.get()->Init();	
+	Star.get()->LoadMap(WorldMap);
 	Star.get()->Start = &(Star.get()->Nodes[(int)(snake->Y)/Map::TileSize][(int)(snake->X)/Map::TileSize]);
 	Star.get()->End = &(Star.get()->Nodes[Y][X]);
 	
-	Star.get()->LoadMap(WorldMap);
+
 	Star.get()->AStarAlg();
 		
 	if (Star.get()->IsPathAvaible() )
@@ -477,13 +535,15 @@ void WorldManager::KeyboardEvent(sf::Event event,  sf::RenderWindow *sf_win)
 		break;
 		
 		case sf::Keyboard::Q:
-		
-			WorldMap.BuildWall(player->X, player->Y, player->dX, player->dY);
+			if(Player->Bomb>0)
+			{
+				WorldMap.BuildWall(player->X, player->Y, player->dX, player->dY);	
+				Player->Bomb--;
+			}
+			
 		break;
 		};
-	}
-		
-	
+	}	
 }
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    

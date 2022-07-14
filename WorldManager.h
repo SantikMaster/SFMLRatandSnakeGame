@@ -9,15 +9,19 @@ namespace sf
 	class Sprite;
 	class Event;
 	class Clock;
+	class Text;
+	class Font;
 }
 class Character;
 class Snake;
 class Beaver;
 class Map;
 class AStar;
+class Engine;
 
 class WorldManager
 {	
+	Engine* C_Engine;
 	std::list<Character*> observers;
 	std::list<std::shared_ptr<Character>> Character_list;
 	
@@ -31,9 +35,11 @@ class WorldManager
 	std::shared_ptr<Beaver> Player;	
 	std::shared_ptr<AStar> Star;
 	
+	std::shared_ptr<sf::Font> p_myFont;
+	std::shared_ptr<sf::Text> p_Text;	
 	
     std::string map_str = "Textures/map.png";
-    std::string potatoFont_str = "Textures/potato_font.png";
+    std::string potatoFont_str = "Textures/vegetables-field.jpg";
 	std::string potato_str = "Textures/potato.png";
 	std::string snake_str = "Textures/snake_head.png";
 	std::string beaver_str = "Textures/Rat.png";
@@ -44,7 +50,8 @@ class WorldManager
 	float Velocity = 1.f;
 	int MaxPotatoes = 3;
 	float SpawnTime;
-	float SpawnPass = 2;
+	float SpawnPass = 0.7;
+	void DrawScoreAndStoppers(sf::RenderWindow *sf_win);
 public:
 	void Attach(Character& o) 
 	 {
@@ -84,5 +91,5 @@ public:
 	void Restart();
 	
 	void KeyboardEvent(sf::Event event, sf::RenderWindow *sf_win);
-	WorldManager();
+	WorldManager(Engine* C_Engine);
 };
