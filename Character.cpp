@@ -152,14 +152,14 @@ void Snake::MoveAlongPath()
 	
 	if (PathToGo.back().X>(int)(X/Map::TileSize))
 	{
-		dX = +1;
+		dX = +1*Speed;
 		dY = 0;
 
 	}
 	else if (PathToGo.back().X-1<(int)((X-Map::TileSize+1)/Map::TileSize))
 	{
 
-		dX = -1;
+		dX = -1*Speed;
 		dY = 0;
 	}
 	else
@@ -176,12 +176,12 @@ void Snake::MoveAlongPath()
 	if ((int)PathToGo.back().Y>(int)(Y/Map::TileSize))
 	{
 		dX = 0;
-		dY = +1;
+		dY = +1*Speed;
 	}
 	else if (PathToGo.back().Y-1<(int)((Y-Map::TileSize+1)/Map::TileSize))
 	{
 		dX = 0;
-		dY = -1;
+		dY = -1*Speed;
 	}
 	else
 	{

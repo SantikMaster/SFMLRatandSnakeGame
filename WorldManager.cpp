@@ -185,6 +185,8 @@ void WorldManager::CollideObjects(Character* player)
 				if(bv!=nullptr)
 				{
 					bv->Bomb++;
+					if(bv->PickedPotato>=PotatoesToWin)
+					C_Engine->state = Engine::WIN_ST;
 				}
 		
 	        	if(sn!=nullptr)
@@ -209,8 +211,9 @@ void WorldManager::CollideObjects(Character* player)
 		pY = player->Y;
 		int beaverX = Player.get()->X;
 		int beaverY = Player.get()->Y;
-		if ((pX>= beaverX - Map::TileSize)&&(pX<= beaverX + Map::TileSize)
-				&&(pY >= beaverY- Map::TileSize)&&(pY <=beaverY + Map::TileSize)
+		if ((pX/Map::TileSize == beaverX/Map::TileSize)&&(pY/Map::TileSize == beaverY/Map::TileSize)
+//		(pX> beaverX - Map::TileSize)&&(pX< beaverX + Map::TileSize)&&(pY/Map::TileSize == beaverY/Map::TileSize)
+//				&&(pY > beaverY- Map::TileSize)&&(pY <beaverY + Map::TileSize)
 				)
 			{			
 			    sn->Grow(); 

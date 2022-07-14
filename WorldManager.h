@@ -52,6 +52,7 @@ class WorldManager
 	int MaxPotatoes = 3;
 	float SpawnTime;
 	float SpawnPass = 0.7;
+	int PotatoesToWin = 10;
 	void DrawScoreAndStoppers(sf::RenderWindow *sf_win);
 public:
 	void Attach(Character& o) 
