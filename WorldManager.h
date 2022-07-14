@@ -31,7 +31,8 @@ class WorldManager
 	
 	std::shared_ptr<sf::Clock> clock;
 	std::shared_ptr<sf::Clock> clock2;
-	
+	std::shared_ptr<sf::Clock> SnakeClock;
+		
 	std::shared_ptr<Beaver> Player;	
 	std::shared_ptr<AStar> Star;
 	

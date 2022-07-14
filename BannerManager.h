@@ -5,7 +5,8 @@ namespace sf
 }
 class BannerManager
 {
-	BannerManager();
+	
 public:
+	BannerManager();
 	void Draw(sf::RenderWindow* Window, bool Lose);
 };

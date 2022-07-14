@@ -5,6 +5,7 @@
 #include "Engine.h"
 #include "Menu.h"
 #include "WorldManager.h"
+#include "BannerManager.h"
 /*	enum State
 	{	
 		INIT_ST,
@@ -20,6 +21,7 @@ Engine::Engine()
 	Window = std::make_shared<sf::RenderWindow>(sf::VideoMode(700, 700), "SFML works!");
 	World = std::make_shared<WorldManager>(this);
 	Menu = std::make_shared<MenuManager>();	
+	Banner =std::make_shared<BannerManager>();	
 	
 	sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
@@ -60,7 +62,7 @@ void Engine::HandleEvents()
 			}
 			else if (Result==4) Window.get()->close();
 		}
-		if(state == GAME_ST)
+		if(state != MENU_ST)
 		{
 			if(event.type==sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 			{
@@ -98,9 +100,12 @@ void Engine::Draw()
 			World.get()->Draw(Window.get());		
 		break;
 		case LOSE_ST:
-//			World.get()->Update();	
-//			World.get()->Draw(Window.get());
-					
+	
+			Banner->Draw(Window.get(), true);		
+		break;
+		case WIN_ST:
+
+			Banner->Draw(Window.get(), false);		
 		break;
 	}
 

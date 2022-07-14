@@ -62,6 +62,7 @@ WorldManager::WorldManager(Engine* Engine)
 	
 	clock = std::make_shared<sf::Clock>();
 	clock2 = std::make_shared<sf::Clock>();
+	SnakeClock = std::make_shared<sf::Clock>();
 	
 	SpawnTime = clock2.get()->getElapsedTime().asSeconds();
 
@@ -200,8 +201,6 @@ void WorldManager::CollideObjects(Character* player)
 	{
 		Snake* sn = dynamic_cast<Snake*>(player);
 		
-//		if(sn!=nullptr)
-//	    	GoToNearestLocation(sn);
 	}
 	// -- beavers collide
 	if(sn!=nullptr)
@@ -211,12 +210,9 @@ void WorldManager::CollideObjects(Character* player)
 		int beaverX = Player.get()->X;
 		int beaverY = Player.get()->Y;
 		if ((pX>= beaverX - Map::TileSize)&&(pX<= beaverX + Map::TileSize)
-				&&(pY >= beaverY- 2*Map::TileSize)&&(pY <=beaverY + 2*Map::TileSize)
+				&&(pY >= beaverY- Map::TileSize)&&(pY <=beaverY + Map::TileSize)
 				)
-			{
-						
-	//	    	player->PickedPotato += 1;
-				
+			{			
 			    sn->Grow(); 
 			    std::cout<<"Rat die!!! \n";
 			    C_Engine->state = Engine::LOSE_ST;
@@ -313,16 +309,20 @@ void WorldManager::Update()
 
     if((-SpawnTime+timeSec)>=SpawnPass)
     {
-    	std::cout<< "tick\n";
-    	SnakesGoToBeavers();
+    	
 		if(observers.size()<MaxPotatoes)
 		{
 			SpawnTime=clock2.get()->getElapsedTime().asSeconds();
        		Character_list.push_back(std::make_shared<Character>(TextureMap["potato"], this));	
 		}
-        clock2->restart();    
+//        clock2->restart();    
    	}
-  
+   if(SnakeClock.get()->getElapsedTime().asSeconds()>=1)
+   {
+   	    std::cout<< "tick\n";
+    	SnakesGoToBeavers();
+   	    SnakeClock->restart();  
+   }
   
 	Player.get()->update(GetTimeMicrosec());
 	for (auto o : Snake_list) 
@@ -426,7 +426,6 @@ void WorldManager::GoToRandPotato(Snake *player) //* TO EDIT
 		Ch = *it;	
 
 
-//			auto player = Player.get();
 		int X = Ch->X/Map::TileSize;
 		int Y = Ch->Y/Map::TileSize;
 		Star.get()->Start = &(Star.get()->Nodes[(int)(player->Y)/Map::TileSize][(int)(player->X)/Map::TileSize]);
@@ -443,12 +442,6 @@ void WorldManager::GoToRandPotato(Snake *player) //* TO EDIT
 		player->IsPathAvaible = true;	
 		std::cout << "Go!!"<< Ch->X<< " "<< Ch->Y<<"\n";
 		
-/*		for(auto it = observers.begin();it!=observers.end();it++)
-		{
-		  Ch = *it;
-			std::cout<< "Exist" << Ch->Counter << "\n";
-	
-		}*/
 			
 	}
 	else
@@ -490,13 +483,7 @@ bool WorldManager::GoToDestination(float goY, float goX, Snake *player) //* TO E
 void WorldManager::KeyboardEvent(sf::Event event,  sf::RenderWindow *sf_win)
 {
 	auto player = Player.get();
-/*	if (event.type==sf::Event::MouseButtonPressed)
-	{
-		sf::Vector2i position = sf::Mouse::getPosition(*sf_win);
-		GoToDestination(position.y, position.x, player);
-	
 
-	}*/
 	if (event.type==sf::Event::KeyReleased)
 	{
 //		player->dX = 0;
