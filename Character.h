@@ -64,7 +64,6 @@ public:
 	int HeadPositionY = 0;
 	int Lenght = 3;
 	float Speed = 0.95;
-//	bool TestFlag = false;
 
 	std::vector<Section> sect;
 	std::list<Section> PathToGo;

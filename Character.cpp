@@ -99,8 +99,16 @@ void Snake::Grow()
 void Snake::update(float time)
 {	
 	this->Character::update(time);
+	if(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize))
+	{
+		std::cout << "Shitted on the head";
+		if(dX>0)Move(RIGHT);
+		if(dX<0)Move(LEFT);
+		if(dY>0)Move(DOWN);
+		if(dY<0)Move(UP);		
+	}
 	
-	
+		
 	if (IsPathAvaible)
 	{
 		MoveAlongPath();
@@ -188,7 +196,7 @@ void Snake::MoveAlongPath()
 		if((PathToGo.back().X==(int)(X/Map::TileSize)))
 		{
 			dY = 0;
-		    std::cout<<"log deleteY\n";
+	//	    std::cout<<"log deleteY\n";
 			PathToGo.pop_back();
 		}
 		   
@@ -219,7 +227,7 @@ void Snake::Move(Direction Dir)
 		{
 			if(WorldManager::WorldMap.Collide(sect[0].X+Map::TileSize, sect[0].Y, Map::TileSize,Map::TileSize))
 			{
-				std::cout<<"stop";
+	//			std::cout<<"stop";
 				PathToGo.clear();
 				return;	
 			}
@@ -233,7 +241,7 @@ void Snake::Move(Direction Dir)
 		{
 			if(WorldManager::WorldMap.Collide(sect[0].X-Map::TileSize, sect[0].Y, Map::TileSize,Map::TileSize))
 			{
-				std::cout<<"stop";
+	//			std::cout<<"stop!!";
 				PathToGo.clear();
 				return;	
 			}
@@ -245,7 +253,7 @@ void Snake::Move(Direction Dir)
 		{
 			if(WorldManager::WorldMap.Collide(sect[0].X, sect[0].Y+Map::TileSize, Map::TileSize,Map::TileSize))
 			{
-				std::cout<<"stop";
+	//			std::cout<<"stop";
 				PathToGo.clear();
 				return;	
 			}
@@ -257,7 +265,7 @@ void Snake::Move(Direction Dir)
 		{	
 			if(WorldManager::WorldMap.Collide(sect[0].X, sect[0].Y-Map::TileSize, Map::TileSize,Map::TileSize))
 			{
-				std::cout<<"stop";
+	//			std::cout<<"stop";
 				PathToGo.clear();
 				return;	
 			}
@@ -269,7 +277,7 @@ void Snake::Move(Direction Dir)
 	
 	if(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize))
 	{
-		std::cout<<"stop";
+//		std::cout<<"stop";
 		PathToGo.clear();
 		X = sect[1].X;
 	    Y = sect[1].Y;
@@ -403,7 +411,6 @@ bool FreeTilesInFront(int X, int Y, float dX, float dY, int &XTile, int &YTile)
 		{
 		
 			YTile =  ((int) ((Y+Map::TileSize/2)/Map::TileSize))*Map::TileSize;;
-		//		std::cout <<YTile << "\n";
 			return true;
 		}
 		if(!WorldManager::WorldMap.Collide(X+Map::TileSize, Y+Map::TileSize/2, Map::TileSize,Map::TileSize))
