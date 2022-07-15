@@ -18,6 +18,13 @@ void Map::Initialize()
 		Tiles[i] = Level[i];
 	}	
 }
+void Map::LoadLevel2()
+{
+	for (int i = 0; i < MapSize; i++)
+	{
+		Tiles[i] = Level2[i];
+	}
+}
 Map::draw(sf::RenderWindow *sf_win)
 {
 	sf::Sprite s;

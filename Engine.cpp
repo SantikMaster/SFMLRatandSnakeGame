@@ -6,15 +6,6 @@
 #include "Menu.h"
 #include "WorldManager.h"
 #include "BannerManager.h"
-/*	enum State
-	{	
-		INIT_ST,
-		MENU_ST,
-		GAME_ST,
-		LOSE_ST,
-		WIN_ST,
-	};*/
-
 
 Engine::Engine()
 {
@@ -62,7 +53,13 @@ void Engine::HandleEvents()
 			}
 			else if (Result==4) Window.get()->close();
 		}
-		if(state != MENU_ST)
+		if(state == PAUSE_ST)
+		{
+	
+			state = GAME_ST;	
+			
+		}
+		if(state != MENU_ST || state != PAUSE_ST)
 		{
 			if(event.type==sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 			{
@@ -101,11 +98,15 @@ void Engine::Draw()
 		break;
 		case LOSE_ST:
 	
-			Banner->Draw(Window.get(), true);		
+			Banner->Draw(Window.get(), BannerManager::LOSE);		
 		break;
 		case WIN_ST:
 
-			Banner->Draw(Window.get(), false);		
+			Banner->Draw(Window.get(), BannerManager::WIN);		
+		break;
+			case PAUSE_ST:
+
+			Banner->Draw(Window.get(), BannerManager::PAUSE);		
 		break;
 	}
 

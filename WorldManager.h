@@ -53,7 +53,9 @@ class WorldManager
 	float SpawnTime;
 	float SpawnPass = 0.7;
 	int PotatoesToWin = 10;
+	int Level = 1;
 	void DrawScoreAndStoppers(sf::RenderWindow *sf_win);
+
 public:
 	void Attach(Character& o) 
 	 {
@@ -90,6 +92,8 @@ public:
 	void GoToNearestPotato(Snake* player);
 	void GoToRandPotato(Snake* player);
 	
+	void StartLevel2();
+	void NextLevel();
 	void Restart();
 	
 	void KeyboardEvent(sf::Event event, sf::RenderWindow *sf_win);

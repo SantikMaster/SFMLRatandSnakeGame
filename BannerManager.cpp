@@ -7,7 +7,7 @@ BannerManager::BannerManager()
 
   
 }
-void BannerManager::Draw(sf::RenderWindow* Window, bool Lose)
+void BannerManager::Draw(sf::RenderWindow* Window, State st)
 {
 		    Window->clear();
 	sf::RectangleShape rectangle(sf::Vector2f(2000, 2000));
@@ -15,24 +15,35 @@ void BannerManager::Draw(sf::RenderWindow* Window, bool Lose)
 	rectangle.setFillColor(sf::Color(sf::Color::White));
 	
 	Window->draw(rectangle);
-	if(Lose)
+	switch (st)
 	{
+	    case(LOSE):
+	    {
 
 //		std::cout << "draw die!!\n";
-	    sf::Texture Texture;
-  	    Texture.loadFromFile("Textures/Lost.jpg");
-     	sf::Sprite sprite(Texture);
-	    Window->draw(sprite);
-	    Window->display();
-	}
-	else
-	{
+	         sf::Texture Texture;
+  	        Texture.loadFromFile("Textures/Lost.jpg");
+     	    sf::Sprite sprite(Texture);
+	        Window->draw(sprite);
+	        Window->display();
+	    }break;
+	    case(WIN):
+	    {
+	        sf::Texture Texture;
+  	        Texture.loadFromFile("Textures/Win.jpg");
+     	    sf::Sprite sprite(Texture);
+	        Window->draw(sprite);
+	        Window->display();	
+	    }	
+	    case(PAUSE):
+	    {
+	        sf::Texture Texture;
+  	        Texture.loadFromFile("Textures/NextLevel.jpg");
+     	    sf::Sprite sprite(Texture);
+	        Window->draw(sprite);
+	        Window->display();	
+	    }break;
+	};
 	
-	    sf::Texture Texture;
-  	    Texture.loadFromFile("Textures/Win.jpg");
-     	sf::Sprite sprite(Texture);
-	    Window->draw(sprite);
-	    Window->display();	
-	}
 	
 }

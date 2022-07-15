@@ -100,13 +100,15 @@ WorldManager::WorldManager(Engine* Engine)
 }
 void WorldManager::Restart()
 {
+	Level = 1;
 	Player.reset();
 	Player = std::make_shared<Beaver>(TextureMap["beaver"],  this);
 	
 	Snake_list.clear();
 	Snake_list.push_back(std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*12, GetTimeSec(), this));
-	Player->X = 150;
-	Player->Y = 330; 
+	Player->X = Map::TileSize*Map::Level1XStart;
+	Player->Y = Map::TileSize*Map::Level1YStart;
+
 	
 	WorldMap.Initialize();
 }
@@ -153,6 +155,29 @@ void WorldManager::push_back(sf::RectangleShape &Obj)
 	std::cout <<"added Rectangle\n";
 
 }
+void WorldManager::StartLevel2()
+{
+	Player.reset();
+	Player = std::make_shared<Beaver>(TextureMap["beaver"],  this);
+	
+	Snake_list.clear();
+	Snake_list.push_back(std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*12, GetTimeSec(), this));
+	Player->X = Map::TileSize*5;
+	Player->Y = Map::TileSize*11;
+
+	WorldMap.LoadLevel2();
+	C_Engine->state = Engine::PAUSE_ST;
+}
+void WorldManager::NextLevel()
+{
+	Level++;
+	switch (Level)
+	{
+		case 2: StartLevel2(); break;
+		case 3: C_Engine->state = Engine::WIN_ST; break;
+	}
+		
+}
 void WorldManager::CollideObjects(Character* player)
 {
 // --- potatoes colide
@@ -186,7 +211,8 @@ void WorldManager::CollideObjects(Character* player)
 				{
 					bv->Bomb++;
 					if(bv->PickedPotato>=PotatoesToWin)
-					C_Engine->state = Engine::WIN_ST;
+						NextLevel();
+				//	C_Engine->state = Engine::WIN_ST;
 				}
 		
 	        	if(sn!=nullptr)
@@ -227,6 +253,7 @@ void WorldManager::CollideObjects(Character* player)
 void WorldManager::Draw(sf::RenderWindow* Window)
 {
 	Window->clear();
+    
 
 	DrawFont(Window, TextureMap["map"]);
 
@@ -273,6 +300,11 @@ void WorldManager::DrawScoreAndStoppers(sf::RenderWindow *sf_win)
 		p_Text.get()->setString(ScoreTxt);
 		p_Text.get()->setPosition(200, 16*Map::TileSize);
 		sf_win->draw(*p_Text.get());
+		
+		ScoreTxt = "Level: " + std::to_string(Level);
+		p_Text.get()->setString(ScoreTxt);
+		p_Text.get()->setPosition(350, 16*Map::TileSize);
+		sf_win->draw(*p_Text.get());
 	}
 	
 }
@@ -317,12 +349,11 @@ void WorldManager::Update()
 		{
 			SpawnTime=clock2.get()->getElapsedTime().asSeconds();
        		Character_list.push_back(std::make_shared<Character>(TextureMap["potato"], this));	
-		}
-//        clock2->restart();    
+		}  
    	}
    if(SnakeClock.get()->getElapsedTime().asSeconds()>=1)
    {
-   	    std::cout<< "tick\n";
+   //	    std::cout<< "tick\n";
     	SnakesGoToBeavers();
    	    SnakeClock->restart();  
    }
@@ -340,9 +371,7 @@ void WorldManager::Update()
 
 void WorldManager::GoToNearestPotato(Snake *player) //* TO EDIT
 {
-	
 
-	
 	if(observers.empty())
 	{	
 //		std::cout<<"No potatoes\n";
@@ -487,11 +516,6 @@ void WorldManager::KeyboardEvent(sf::Event event,  sf::RenderWindow *sf_win)
 {
 	auto player = Player.get();
 
-	if (event.type==sf::Event::KeyReleased)
-	{
-//		player->dX = 0;
-//		player->dY = 0;
-	}
 
 	if (event.type==sf::Event::KeyPressed)
 	{
@@ -521,7 +545,6 @@ void WorldManager::KeyboardEvent(sf::Event event,  sf::RenderWindow *sf_win)
 		case sf::Keyboard::E:
 			player->DigHole = true;
 			player->DigHoleStartTime = GetTimeSec();
-		//	DigHole();
 		break;
 		
 		case sf::Keyboard::Q:

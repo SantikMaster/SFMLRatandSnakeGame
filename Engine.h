@@ -22,6 +22,7 @@ public:
 		GAME_ST,
 		LOSE_ST,
 		WIN_ST,
+		PAUSE_ST,
 	};
 
 	State state = INIT_ST;
