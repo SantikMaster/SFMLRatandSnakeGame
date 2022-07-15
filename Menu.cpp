@@ -21,8 +21,8 @@ MenuManager::MenuManager()
 	
 	MenuItems.push_back("Start/Resume");
 	MenuItems.push_back("Restart");
-	MenuItems.push_back("I3");
-	MenuItems.push_back("I4");	
+	MenuItems.push_back("Keyboards");
+	MenuItems.push_back("Description");	
 	MenuItems.push_back("Exit");
 	MenuItems.shrink_to_fit();
 }
@@ -57,9 +57,17 @@ int MenuManager::KeyboardEvent(sf::Event event)
 			{  // Game Start on First field
 				return 2;
 			}
+			if (Selected == 2) 
+			{  // Game Start on First field
+				return 3;
+			}
+			if (Selected == 3) 
+			{  // Game Start on First field
+				return 4;
+			}
 			if (Selected == MenuItems.size()-1)
 			{// Game End on Last Field
-				return 4;	
+				return 5;	
 			}
 		break;
 		

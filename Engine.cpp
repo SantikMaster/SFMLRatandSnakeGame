@@ -39,6 +39,7 @@ void Engine::HandleEvents()
     {
         if (event.type == sf::Event::Closed)
                 Window.get()->close();
+     
         if(state == MENU_ST)
 		{
 			Result=Menu.get()->KeyboardEvent(event);
@@ -51,13 +52,22 @@ void Engine::HandleEvents()
 				state = GAME_ST;
 				World.get()->Restart();	
 			}
-			else if (Result==4) Window.get()->close();
+			else if (Result==3) 
+			{
+				state = KEY_ST;
+				
+			}
+			else if (Result==4) 
+			{
+				state = DESC_ST;
+					
+			}
+			else if (Result==5) Window.get()->close();
 		}
+	
 		if(state == PAUSE_ST)
 		{
-	
-			state = GAME_ST;	
-			
+			state = GAME_ST;		
 		}
 		if(state != MENU_ST || state != PAUSE_ST)
 		{
@@ -65,9 +75,9 @@ void Engine::HandleEvents()
 			{
 				state = MENU_ST;
 			}
-			else World.get()->KeyboardEvent(event, Window.get());
+			if(state ==GAME_ST)World.get()->KeyboardEvent(event, Window.get());
 			
-			
+					
 		}
 		
     }
@@ -104,9 +114,17 @@ void Engine::Draw()
 
 			Banner->Draw(Window.get(), BannerManager::WIN);		
 		break;
-			case PAUSE_ST:
+		case PAUSE_ST:
 
 			Banner->Draw(Window.get(), BannerManager::PAUSE);		
+		break;
+		case DESC_ST:
+
+			Banner->Draw(Window.get(), BannerManager::DESC);		
+		break;
+		case KEY_ST:
+
+			Banner->Draw(Window.get(), BannerManager::KEY);		
 		break;
 	}
 

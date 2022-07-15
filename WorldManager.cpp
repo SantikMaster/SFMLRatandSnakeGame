@@ -303,7 +303,7 @@ void WorldManager::DrawScoreAndStoppers(sf::RenderWindow *sf_win)
 		
 		ScoreTxt = "Level: " + std::to_string(Level);
 		p_Text.get()->setString(ScoreTxt);
-		p_Text.get()->setPosition(350, 16*Map::TileSize);
+		p_Text.get()->setPosition(380, 16*Map::TileSize);
 		sf_win->draw(*p_Text.get());
 	}
 	

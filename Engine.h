@@ -23,6 +23,8 @@ public:
 		LOSE_ST,
 		WIN_ST,
 		PAUSE_ST,
+		KEY_ST,
+		DESC_ST,
 	};
 
 	State state = INIT_ST;
