@@ -69,13 +69,14 @@ void Engine::HandleEvents()
 		{
 			state = GAME_ST;		
 		}
+		// handle keyboard events
 		if(state != MENU_ST || state != PAUSE_ST)
 		{
 			if(event.type==sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 			{
 				state = MENU_ST;
 			}
-			if(state ==GAME_ST)World.get()->KeyboardEvent(event, Window.get());
+			if(state == GAME_ST)World.get()->KeyboardEvent(event, Window.get());
 			
 					
 		}

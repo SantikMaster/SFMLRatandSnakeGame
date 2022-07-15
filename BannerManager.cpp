@@ -43,7 +43,7 @@ void BannerManager::Draw(sf::RenderWindow* Window, State st)
      	    sf::Sprite sprite(Texture);
 	        Window->draw(sprite);
 	        Window->display();	
-	    }	
+	    }break;	
 	    case(PAUSE):
 	    {
 	        sf::Texture Texture;
@@ -76,6 +76,12 @@ void BannerManager::Draw(sf::RenderWindow* Window, State st)
 		    p_Text.get()->setString(ScoreTxt);
 		    p_Text.get()->setPosition(50, 250);
 		    Window->draw(*p_Text.get());
+		    
+		    ScoreTxt = "Kryvchikov Oleksii";
+		    p_Text.get()->setString(ScoreTxt);
+		    p_Text.get()->setPosition(100, 350);
+		    Window->draw(*p_Text.get());
+		    
 	        Window->display();	
 	    }break;
 	    case(KEY):

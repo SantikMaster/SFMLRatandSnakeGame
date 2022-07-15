@@ -99,13 +99,24 @@ void Snake::Grow()
 void Snake::update(float time)
 {	
 	this->Character::update(time);
+	float Xtemp = X, Ytemp = Y;
 	if(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize))
 	{
-		std::cout << "Shitted on the head";
-		if(dX>0)Move(RIGHT);
-		if(dX<0)Move(LEFT);
-		if(dY>0)Move(DOWN);
-		if(dY<0)Move(UP);		
+//		std::cout << "Shitted on the head\n";
+		if(dX>0) X-=Map::TileSize; //Move(RIGHT);
+		if(dX<0) X+=Map::TileSize;//Move(LEFT);
+		if(dY>0) Y-=Map::TileSize;//Move(DOWN);
+		if(dY<0) Y+=Map::TileSize;//Move(UP);
+		
+		if((dX==Xtemp)&&(dY==Ytemp))	
+		{
+		do 
+		{
+			X +=Map::TileSize/5*(1-rand()%3);
+			Y +=Map::TileSize/5*(1-rand()%3);
+		}while(!(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize)));
+			
+		}	
 	}
 	
 		

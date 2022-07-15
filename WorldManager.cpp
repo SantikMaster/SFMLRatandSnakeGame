@@ -73,12 +73,7 @@ WorldManager::WorldManager(Engine* Engine)
 	WorldMap = Map(TextureMap["map"]);	
 	
 	Restart();
-   /* Snake_list.push_back(std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*12, GetTimeSec(), this));
-   
-	Player = std::make_shared<Beaver>(TextureMap["beaver"],  this);
 
-	Player->X = 150;
-	Player->Y = 330; */
 
 
 	
@@ -119,7 +114,7 @@ void WorldManager::Detach(Character* o)
 	{
 		if (*it == o)
 		{
-			std::cout<< "REMOVED" << o->Counter << "\n";
+	//		std::cout<< "REMOVED" << o->Counter << "\n";
 			observers.erase(it);
 		}
 	}
@@ -163,9 +158,22 @@ void WorldManager::StartLevel2()
 	Snake_list.clear();
 	Snake_list.push_back(std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*12, GetTimeSec(), this));
 	Player->X = Map::TileSize*5;
-	Player->Y = Map::TileSize*11;
+	Player->Y = Map::TileSize*5;
 
 	WorldMap.LoadLevel2();
+	C_Engine->state = Engine::PAUSE_ST;
+}
+void WorldManager::StartLevel3()
+{
+	Player.reset();
+	Player = std::make_shared<Beaver>(TextureMap["beaver"],  this);
+	
+	Snake_list.clear();
+	Snake_list.push_back(std::make_shared<Snake>(TextureMap["snake"], Map::TileSize*10, Map::TileSize*12, GetTimeSec(), this));
+	Player->X = Map::TileSize*5;
+	Player->Y = Map::TileSize*11;
+
+	WorldMap.LoadLevel3();
 	C_Engine->state = Engine::PAUSE_ST;
 }
 void WorldManager::NextLevel()
@@ -173,8 +181,12 @@ void WorldManager::NextLevel()
 	Level++;
 	switch (Level)
 	{
-		case 2: StartLevel2(); break;
-		case 3: C_Engine->state = Engine::WIN_ST; break;
+		case 2: StartLevel2();
+		break;
+		case 3: StartLevel3();
+		break;
+		case 4: C_Engine->state = Engine::WIN_ST;
+		break;
 	}
 		
 }
@@ -219,8 +231,6 @@ void WorldManager::CollideObjects(Character* player)
 			    	sn->Grow(); 
 			    	
 				Detach(potato);
-		//		GoToNearestLocation();
-		//		std::cout<< " log 111\n";
 				Detached = true;
 			}
 		}
@@ -406,7 +416,7 @@ void WorldManager::GoToNearestPotato(Snake *player) //* TO EDIT
 		for(auto it = observers.begin();it!=observers.end();it++)
 		{
 		  Ch = *it;
-			std::cout<< "Exist" << Ch->Counter << "\n";
+	//		std::cout<< "Exist" << Ch->Counter << "\n";
 	
 		}
 			
@@ -472,14 +482,12 @@ void WorldManager::GoToRandPotato(Snake *player) //* TO EDIT
 		
 		Star.get()->SetPath(&(player->PathToGo));
 		player->IsPathAvaible = true;	
-		std::cout << "Go!!"<< Ch->X<< " "<< Ch->Y<<"\n";
-		
 			
 	}
 	else
 	{
 		player->IsPathAvaible = false;	
-		std::cout << "No path!!\n";	
+//		std::cout << "No path!!\n";	
 	}
 	
 }

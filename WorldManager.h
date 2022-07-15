@@ -93,6 +93,7 @@ public:
 	void GoToRandPotato(Snake* player);
 	
 	void StartLevel2();
+	void StartLevel3();
 	void NextLevel();
 	void Restart();
 	
