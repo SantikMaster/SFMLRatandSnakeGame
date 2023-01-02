@@ -56,11 +56,6 @@ void Character::draw(sf::RenderWindow *sf_win)
 {
 
 	sf_win->draw(sprite);
-/*	sf::CircleShape circle;
-	circle.setRadius(5);
-	circle.setOutlineColor(sf::Color::Red);
-	circle.setPosition(X, Y);
-	sf_win->draw(circle);*/
 }
 
 Snake::Snake(sf::Texture Txtr, int tX, int tY, float SpawnT = 0, WorldManager *sb= nullptr)
