@@ -16,7 +16,7 @@ void Character::update(float time)
 
 	X += dX*time*0.0001;
 	Y += dY*time*0.0001;	
-	if(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize)
+	if(World->WorldMap->Collide(X, Y, Map::TileSize,Map::TileSize)
 //	&&WorldManager::WorldMap.Collide(X+Map::TileSize-1, Y+Map::TileSize-1, Map::TileSize,Map::TileSize)
 	)
 	{
@@ -44,7 +44,7 @@ Character::Character(const sf::Texture &image, WorldManager *sb)
 	{	
 		X = (rand()%Map::MapSize)*Map::TileSize;		// start position
 		Y = (rand()%Map::MapSize)*Map::TileSize;
-	    colresult =	World->WorldMap.Collide(X, Y, Map::TileSize, Map::TileSize);
+	    colresult =	World->WorldMap->Collide(X, Y, Map::TileSize, Map::TileSize);
 
 	}
 			// start position
@@ -95,7 +95,7 @@ void Snake::update(float time)
 {	
 	this->Character::update(time);
 	float Xtemp = X, Ytemp = Y;
-	if(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize))
+	if(World->WorldMap->Collide(X, Y, Map::TileSize,Map::TileSize))
 	{
 //		std::cout << "Shitted on the head\n";
 		if(dX>0) X-=Map::TileSize; //Move(RIGHT);
@@ -109,7 +109,7 @@ void Snake::update(float time)
 		{
 			X +=Map::TileSize/5*(1-rand()%3);
 			Y +=Map::TileSize/5*(1-rand()%3);
-		}while(!(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize)));
+		}while(!(World->WorldMap->Collide(X, Y, Map::TileSize,Map::TileSize)));
 			
 		}	
 	}
@@ -231,7 +231,7 @@ void Snake::Move(Direction Dir)
 		
 		case RIGHT:
 		{
-			if(WorldManager::WorldMap.Collide(sect[0].X+Map::TileSize, sect[0].Y, Map::TileSize,Map::TileSize))
+			if(World->WorldMap->Collide(sect[0].X+Map::TileSize, sect[0].Y, Map::TileSize,Map::TileSize))
 			{
 	//			std::cout<<"stop";
 				PathToGo.clear();
@@ -245,7 +245,7 @@ void Snake::Move(Direction Dir)
 		break;
 		case LEFT:
 		{
-			if(WorldManager::WorldMap.Collide(sect[0].X-Map::TileSize, sect[0].Y, Map::TileSize,Map::TileSize))
+			if(World->WorldMap->Collide(sect[0].X-Map::TileSize, sect[0].Y, Map::TileSize,Map::TileSize))
 			{
 	//			std::cout<<"stop!!";
 				PathToGo.clear();
@@ -257,7 +257,7 @@ void Snake::Move(Direction Dir)
 		break;	
 		case DOWN:
 		{
-			if(WorldManager::WorldMap.Collide(sect[0].X, sect[0].Y+Map::TileSize, Map::TileSize,Map::TileSize))
+			if(World->WorldMap->Collide(sect[0].X, sect[0].Y+Map::TileSize, Map::TileSize,Map::TileSize))
 			{
 	//			std::cout<<"stop";
 				PathToGo.clear();
@@ -269,7 +269,7 @@ void Snake::Move(Direction Dir)
 		break;
 		case UP:
 		{	
-			if(WorldManager::WorldMap.Collide(sect[0].X, sect[0].Y-Map::TileSize, Map::TileSize,Map::TileSize))
+			if(World->WorldMap->Collide(sect[0].X, sect[0].Y-Map::TileSize, Map::TileSize,Map::TileSize))
 			{
 	//			std::cout<<"stop";
 				PathToGo.clear();
@@ -281,7 +281,7 @@ void Snake::Move(Direction Dir)
 		break;	
 	};
 	
-	if(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize))
+	if(World->WorldMap->Collide(X, Y, Map::TileSize,Map::TileSize))
 	{
 //		std::cout<<"stop";
 		PathToGo.clear();
@@ -409,17 +409,17 @@ void Beaver::Die()
 {
 	Alive = false;
 }
-bool FreeTilesInFront(int X, int Y, float dX, float dY, int &XTile, int &YTile)
+bool Beaver::FreeTilesInFront(int X, int Y, float dX, float dY, int &XTile, int &YTile)
 {
 	if (dX>0)
 	{
-		if(!WorldManager::WorldMap.Collide(X+Map::TileSize, Y, Map::TileSize,Map::TileSize))
+		if(!World->WorldMap->Collide(X+Map::TileSize, Y, Map::TileSize,Map::TileSize))
 		{
 		
 			YTile =  ((int) ((Y+Map::TileSize/2)/Map::TileSize))*Map::TileSize;;
 			return true;
 		}
-		if(!WorldManager::WorldMap.Collide(X+Map::TileSize, Y+Map::TileSize/2, Map::TileSize,Map::TileSize))
+		if(!World->WorldMap->Collide(X+Map::TileSize, Y+Map::TileSize/2, Map::TileSize,Map::TileSize))
 		{
 			YTile =  ((int) ((Y+Map::TileSize)/Map::TileSize))*Map::TileSize;;
 		//	YTile = Y+Map::TileSize;
@@ -428,13 +428,13 @@ bool FreeTilesInFront(int X, int Y, float dX, float dY, int &XTile, int &YTile)
 	}
 	if (dX<0)
 	{
-		if(!WorldManager::WorldMap.Collide(X-1, Y, Map::TileSize,Map::TileSize))
+		if(!World->WorldMap->Collide(X-1, Y, Map::TileSize,Map::TileSize))
 		{
 			
 			YTile =  ((int) ((Y+Map::TileSize/2)/Map::TileSize))*Map::TileSize;;
 			return true;
 		}
-		if(!WorldManager::WorldMap.Collide(X-1, Y+Map::TileSize/2, Map::TileSize,Map::TileSize))
+		if(!World->WorldMap->Collide(X-1, Y+Map::TileSize/2, Map::TileSize,Map::TileSize))
 		{
 			YTile =  ((int) ((Y+Map::TileSize)/Map::TileSize))*Map::TileSize;;
 		//	YTile = Y+Map::TileSize;
@@ -443,13 +443,13 @@ bool FreeTilesInFront(int X, int Y, float dX, float dY, int &XTile, int &YTile)
 	}
 	if (dY>0)
 	{
-		if(!WorldManager::WorldMap.Collide(X, Y+Map::TileSize, Map::TileSize,Map::TileSize))
+		if(!World->WorldMap->Collide(X, Y+Map::TileSize, Map::TileSize,Map::TileSize))
 		{
 			XTile =   ((int) ((X+Map::TileSize/2)/Map::TileSize))*Map::TileSize;
 	
 			return true;
 		}
-		if(!WorldManager::WorldMap.Collide(X+Map::TileSize/2, Y+Map::TileSize, Map::TileSize,Map::TileSize))
+		if(!World->WorldMap->Collide(X+Map::TileSize/2, Y+Map::TileSize, Map::TileSize,Map::TileSize))
 		{
 		//	XTile = X+Map::TileSize;
 			XTile =  ((int) ((X+Map::TileSize)/Map::TileSize))*Map::TileSize;
@@ -460,13 +460,13 @@ bool FreeTilesInFront(int X, int Y, float dX, float dY, int &XTile, int &YTile)
 	if (dY<0)
 	{
 //		std::cout<< "log\n";
-		if(!WorldManager::WorldMap.Collide(X, Y-1, Map::TileSize,Map::TileSize))
+		if(!World->WorldMap->Collide(X, Y-1, Map::TileSize,Map::TileSize))
 		{
 			
 			XTile =   ((int) ((X+Map::TileSize/2)/Map::TileSize))*Map::TileSize;
 			return true;
 		}
-		if(!WorldManager::WorldMap.Collide(X+Map::TileSize/2, Y-1, Map::TileSize,Map::TileSize))
+		if(!World->WorldMap->Collide(X+Map::TileSize/2, Y-1, Map::TileSize,Map::TileSize))
 		{
 			XTile =  ((int) ((X+Map::TileSize)/Map::TileSize))*Map::TileSize;
 		//	XTile = X+Map::TileSize;
@@ -478,8 +478,8 @@ bool FreeTilesInFront(int X, int Y, float dX, float dY, int &XTile, int &YTile)
 }
 void Beaver::update(float time)
 {	
-//	sprite.setPosition(X - WorldManager::offsetX, Y - WorldManager::offsetY);
-//	sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
+//	sprite.setPosition(X - World->offsetX, Y - World->offsetY);
+//	sprite.setPosition(X - World->offsetX -20, Y - 20  - World->offsetY);
 	
 	if (DigHole)
 	{
@@ -488,16 +488,16 @@ void Beaver::update(float time)
         {
             CurrentFrame = 0;
 	    }
-			sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
+			sprite.setPosition(X - World->offsetX -20, Y - 20  - World->offsetY);
 			sprite.setTextureRect(sf::IntRect(121*int(CurrentFrame)+120, 0, Width , Height));
 	//			std::cout<<DigHoleStartTime<<" "<< World->GetTimeSec()<<"\n";
 		if ((-DigHoleStartTime + World->GetTimeSec() )> DigingTime)
      	{
-		    WorldManager::WorldMap.EraseWall(X, Y);
-			WorldManager::WorldMap.EraseWall(X+Map::TileSize, Y);	
-			WorldManager::WorldMap.EraseWall(X-Map::TileSize, Y);	
-			WorldManager::WorldMap.EraseWall(X, Y+Map::TileSize);	
-			WorldManager::WorldMap.EraseWall(X, Y-Map::TileSize);	
+		    World->WorldMap->EraseWall(X, Y);
+			World->WorldMap->EraseWall(X+Map::TileSize, Y);
+			World->WorldMap->EraseWall(X-Map::TileSize, Y);
+			World->WorldMap->EraseWall(X, Y+Map::TileSize);
+			World->WorldMap->EraseWall(X, Y-Map::TileSize);
 	        DigHole = false;	
 	    }	
 	}
@@ -520,9 +520,9 @@ void Beaver::update(float time)
 		
 		}
 	
-	if(WorldManager::WorldMap.Collide(X, Y, Map::TileSize,Map::TileSize)
-	 || WorldManager::WorldMap.Collide(X+Map::TileSize-5, Y, Map::TileSize,Map::TileSize)
-	 || WorldManager::WorldMap.Collide(X, Y+Map::TileSize-5, Map::TileSize,Map::TileSize)
+	if(World->WorldMap->Collide(X, Y, Map::TileSize,Map::TileSize)
+	 || World->WorldMap->Collide(X+Map::TileSize-5, Y, Map::TileSize,Map::TileSize)
+	 || World->WorldMap->Collide(X, Y+Map::TileSize-5, Map::TileSize,Map::TileSize)
 	)
 	{
 		
@@ -550,27 +550,27 @@ void Beaver::update(float time)
 	}
 	if(dY>0)
 	{	
-		sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
+		sprite.setPosition(X - World->offsetX -20, Y - 20  - World->offsetY);
 		sprite.setTextureRect(sf::IntRect(120*int(CurrentFrame)+0, 120, Width , Height));
 	}
 	if(dY<0)
 	{
-		sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
+		sprite.setPosition(X - World->offsetX -20, Y - 20  - World->offsetY);
 		sprite.setTextureRect(sf::IntRect(121*int(CurrentFrame)+0, 360, Width , Height));	
 	}
 	if(dX<0)
 	{
-		sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
+		sprite.setPosition(X - World->offsetX -20, Y - 20  - World->offsetY);
 		sprite.setTextureRect(sf::IntRect(121*int(CurrentFrame)+0, 240, Width , Height));	
 	}
 	if(dX>0)
 	{	
-		sprite.setPosition(X - WorldManager::offsetX -20, Y - 20  - WorldManager::offsetY);
+		sprite.setPosition(X - World->offsetX -20, Y - 20  - World->offsetY);
 		sprite.setTextureRect(sf::IntRect(121*int(CurrentFrame)+Width, 240, -Width , Height));	
 	}
     if(dX == 0 && dY == 0 )
 	{	
-		sprite.setPosition(X - WorldManager::offsetX - 10, Y - 20 - WorldManager::offsetY);
+		sprite.setPosition(X - World->offsetX - 10, Y - 20 - World->offsetY);
 		sprite.setTextureRect(sf::IntRect(0+0, 0, Width , Height));	
 		
 		
@@ -593,7 +593,7 @@ Beaver::Beaver(const sf::Texture &image, WorldManager *sb)
 	{	
 		X = (rand()%Map::MapSize)*Map::TileSize;		// start position
 		Y = (rand()%Map::MapSize)*Map::TileSize;
-	    colresult =	World->WorldMap.Collide(X, Y, Map::TileSize, Map::TileSize);
+	    colresult =	World->WorldMap->Collide(X, Y, Map::TileSize, Map::TileSize);
 
 	}/**/
 			

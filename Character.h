@@ -97,7 +97,8 @@ public:
 	
 	Beaver();
 	Beaver(const sf::Texture &image, WorldManager *sb);
-	
+	bool FreeTilesInFront(int X, int Y, float dX, float dY, int& XTile, int& YTile);
+
 	void SetRandXY(int tryX, int tryY, const Map& MapW);
 	void draw(sf::RenderWindow *sf_win) override;
 	void update(float time) override;

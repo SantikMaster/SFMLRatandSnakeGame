@@ -5,7 +5,7 @@
 
 MenuManager::MenuManager()
 {
-	std::string myfontFileName="Arial.ttf";
+	std::string myfontFileName="../Arial.ttf";
 	p_myFont = std::make_shared<sf::Font>();
 	p_Text = std::make_shared<sf::Text>();
 	auto text = p_Text.get();

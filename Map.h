@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <string>
+#include <string.h>
 
 class Map
 {
@@ -7,12 +7,11 @@ class Map
 	sf::Sprite sprite;
 public:
 	static const int MapSize = 16;
-	static const int TileSize = 40;
+    static const int TileSize = 40;
 	
 	std::string Tiles[ MapSize];
 	Map(sf::Texture);
-//	Map() = default;
-    Map() {};
+
 
 	void Initialize();
 	void LoadLevel2();
@@ -22,7 +21,7 @@ public:
 	void EraseWall(int X, int Y);
 	void draw(sf::RenderWindow *sf_win);
 	bool Collide(int X, int Y, int Width, int Height) const;
-
+  
 
 	std::string Level2[MapSize] =
 	 {
@@ -126,6 +125,6 @@ public:
        "0               0             0        000              000         rrrrrrr0                                                                           0",
 
        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000PPPPPPPPPPPP"
-	};/* */
+	};  /**/
     
 };

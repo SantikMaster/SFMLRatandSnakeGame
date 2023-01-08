@@ -36,14 +36,15 @@ class WorldManager
 	std::shared_ptr<Beaver> Player;	
 	std::shared_ptr<AStar> Star;
 	
+	
 	std::shared_ptr<sf::Font> p_myFont;
 	std::shared_ptr<sf::Text> p_Text;	
 	
-    std::string map_str = "Textures/map.png";
-    std::string potatoFont_str = "Textures/vegetables-field.jpg";
-	std::string potato_str = "Textures/potato.png";
-	std::string snake_str = "Textures/snake_head.png";
-	std::string beaver_str = "Textures/Rat.png";
+    std::string map_str = "../Textures/map.png";
+    std::string potatoFont_str = "../Textures/vegetables-field.jpg";
+	std::string potato_str = "../Textures/potato.png";
+	std::string snake_str = "../Textures/snake_head.png";
+	std::string beaver_str = "../Textures/Rat.png";
 	
 	std::shared_ptr<sf::Sprite> Potato;
 	std::shared_ptr<sf::Sprite> PotatoFont;
@@ -70,7 +71,9 @@ public:
 	static int offsetX;
 	static int offsetY;
 	
-	static Map WorldMap;
+	//static
+	//	Map WorldMap;
+	std::shared_ptr<Map> WorldMap;
 	
 	template <class T>
 	void push_back(T& Object);

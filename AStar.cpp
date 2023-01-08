@@ -3,6 +3,8 @@
 #include "Map.h"
 #include<SFML/Graphics.hpp>
 #include <iostream>
+//#define INFINITY 100000
+#include <cmath>
 struct Section
 {
 		int X, Y;

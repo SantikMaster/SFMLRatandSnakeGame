@@ -32,6 +32,7 @@ void Map::LoadLevel3()
 		Tiles[i] = Level3[i];
 	}
 }
+
 void Map::draw(sf::RenderWindow *sf_win)
 {
 	sf::Sprite s;
@@ -72,7 +73,7 @@ void Map::draw(sf::RenderWindow *sf_win)
 			sf_win->draw(s);
 		}
 	}
-}	
+}	// */
 void Map::BuildWall(int X, int Y, float dX, float dY)
 {
 	if (dX>0)

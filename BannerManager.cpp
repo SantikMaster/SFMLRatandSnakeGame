@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 BannerManager::BannerManager()
 {
-	std::string myfontFileName="Arial.ttf";
+	std::string myfontFileName="../Arial.ttf";
 	p_myFont = std::make_shared<sf::Font>();
 	p_Text = std::make_shared<sf::Text>();
 	auto text = p_Text.get();
@@ -31,7 +31,7 @@ void BannerManager::Draw(sf::RenderWindow* Window, State st)
 	    case(LOSE):
 	    {
 	         sf::Texture Texture;
-  	        Texture.loadFromFile("Textures/Lost.jpg");
+  	        Texture.loadFromFile("../Textures/Lost.jpg");
      	    sf::Sprite sprite(Texture);
 	        Window->draw(sprite);
 	        Window->display();
@@ -39,7 +39,7 @@ void BannerManager::Draw(sf::RenderWindow* Window, State st)
 	    case(WIN):
 	    {
 	        sf::Texture Texture;
-  	        Texture.loadFromFile("Textures/Win.jpg");
+  	        Texture.loadFromFile("../Textures/Win.jpg");
      	    sf::Sprite sprite(Texture);
 	        Window->draw(sprite);
 	        Window->display();	
@@ -47,7 +47,7 @@ void BannerManager::Draw(sf::RenderWindow* Window, State st)
 	    case(PAUSE):
 	    {
 	        sf::Texture Texture;
-  	        Texture.loadFromFile("Textures/NextLevel.jpg");
+  	        Texture.loadFromFile("../Textures/NextLevel.jpg");
      	    sf::Sprite sprite(Texture);
 	        Window->draw(sprite);
 	        Window->display();	
