@@ -5,7 +5,7 @@ Game with SFML and AStar pathfinding algorithm. Imagine you are a rat, you can d
 Collect potatoes and avoid the snake.
 
 
-#Installation
+# Installation
 
 1)instal SFML
 
