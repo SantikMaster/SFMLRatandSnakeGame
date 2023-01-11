@@ -6,10 +6,15 @@ Collect potatoes and avoid the snake.
 
 
 #Installation
+
 1)instal SFML
+
 2)Set path to SFML in cmakeLists
 
 then 
+
 $ mkdir build
+
 $ cd build
+
 $ cmake ..
